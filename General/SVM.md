@@ -57,7 +57,7 @@ Objectif : Maximiser la marge ⟺ Minimiser $\left \lVert \mathbf{w} \right \rVe
 
 Problème primal (Hard Margin SVM) :
 
-$\min_{\mathbf{w}, b} \frac{1}{2} \left \lVert \mathbf{w} \right \rVert^2$
+$\min_{\mathbf{w}, b} \frac{1}{2} \left \lVert \mathbf{w}\right \rVert ^2 $
 
 $$\text{sous contrainte : } y_i(\mathbf{w} \cdot \mathbf{x}_i + b) \geq 1, \quad \forall i$$
 
@@ -67,23 +67,18 @@ Chaque point doit être du bon côté de sa marge $y_i(w · x_i + b) ≥ 1$ gara
 # Soft Margin SVM - Le Monde Réel 🌍
 Dans la réalité, les données sont rarement parfaitement séparables. On introduit des variables de relâchement (slack variables) $\varepsilon_i$.
 
-3.1 Les Slack Variables
+## Les Slack Variables
 $\varepsilon_i (xi)$ mesure l'erreur pour le point $i$ :
 
 - $\varepsilon_i = 0$ : point correctement classé au-delà de la marge
 - $0 < \varepsilon_i < 1$ : point dans la marge mais du bon côté
 - $\varepsilon_i ≥ 1$ : point mal classé
 
-Classe -1          Marge          Classe +1
-    ●                |                 ○
-    ●        ○       |      ●          ○  ← Violations
-   [●]  ------------|-------------   [○]
-    ●                |                 ○
-         ↑ ξ > 1         ↑ 0 < ξ < 1
+<img width="1132" height="651" alt="1_RgFWpCEG5AvnmGF5ESy1Tg" src="https://github.com/user-attachments/assets/521d0d7e-f530-47f2-8cda-fe4a10e06652" />
 
 ## Problème d'Optimisation (Soft Margin)
 
-$$\min_{\mathbf{w}, b, \boldsymbol{\xi}} \frac{1}{2} \|\|\mathbf{w}||^2 + C \sum_{i=1}^{n} \xi_i$$
+$$\min_{\mathbf{w}, b, \boldsymbol{\xi}} \frac{1}{2} \left \lVert \mathbf{w} \right \rVert^2 + C \sum_{i=1}^{n} \xi_i$$
 
 $$\text{sous contraintes : } y_i(\mathbf{w} \cdot \mathbf{x}_i + b) \geq 1 - \xi_i, \quad \xi_i \geq 0$$
 
@@ -95,6 +90,6 @@ C est l'hyperparamètre le plus important du SVM :
 
 Trade-off : Marge maximale vs Erreurs minimales
 
-C = \frac{1}{\lambda}
+$$C = \frac{1}{\lambda}$$
 
 où $\lambda$ est le paramètre de régularisation
