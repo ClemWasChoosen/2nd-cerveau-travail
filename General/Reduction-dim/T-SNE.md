@@ -459,8 +459,8 @@ Single-cell RNA sequencing :
 - Comparer les représentations apprises par différents modèles
 - Vérifier que le modèle apprend des features discriminantes
 
-# 12. Ressources et références
-## Papers fondamentaux
+## 12. Ressources et références
+### Papers fondamentaux
 
 - t-SNE original (2008)
 > van der Maaten, L., & Hinton, G. (2008)
@@ -476,7 +476,7 @@ Single-cell RNA sequencing :
 > "Accelerating t-SNE using tree-based algorithms"
 > Journal of Machine Learning Research, 15(1), 3221-3245
 
-## Ressources complémentaires
+### Ressources complémentaires
 
 - How to Use t-SNE Effectively (2016)
 > Wattenberg, et al.
