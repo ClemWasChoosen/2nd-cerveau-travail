@@ -435,3 +435,55 @@ embeddings_2d = tsne.fit_transform(word_vectors)
 plt.scatter(embeddings_2d[:, 0], embeddings_2d[:, 1])
 for i, word in enumerate(vocabulary):
     plt.annotate(word, (embeddings_2d[i, 0], embeddings_2d[i, 1]))
+```
+### 2. Analyse de datasets images
+MNIST, CIFAR, ImageNet :
+
+- Visualiser la séparation des classes
+- Identifier des confusions entre classes similaires
+- Détecter des outliers
+
+### 3. Bioinformatique
+Single-cell RNA sequencing :
+- Visualiser des milliers de cellules selon leur expression génétique
+- Identifier des types cellulaires
+- Découvrir des sous-populations
+
+### 4. Détection d'anomalies
+
+- Points isolés dans la projection t-SNE
+- Mais attention : toujours vérifier en haute dimension
+
+### 5. Évaluation de modèles
+
+- Comparer les représentations apprises par différents modèles
+- Vérifier que le modèle apprend des features discriminantes
+
+# 12. Ressources et références
+## Papers fondamentaux
+
+- t-SNE original (2008)
+> van der Maaten, L., & Hinton, G. (2008)
+> "Visualizing Data using t-SNE"
+> Journal of Machine Learning Research, 9(86), 2579-2605
+> 📄 http://jmlr.org/papers/v9/vandermaaten08a.html
+- SNE original (2002)
+> Hinton, G. E., & Roweis, S. T. (2002)
+> "Stochastic neighbor embedding"
+> Advances in Neural Information Processing Systems, 15
+- Accelerated t-SNE (Barnes-Hut) (2014)
+> van der Maaten, L. (2014)
+> "Accelerating t-SNE using tree-based algorithms"
+> Journal of Machine Learning Research, 15(1), 3221-3245
+
+## Ressources complémentaires
+
+- How to Use t-SNE Effectively (2016)
+> Wattenberg, et al.
+> Distill.pub
+> 🌐 https://distill.pub/2016/misread-tsne/
+> Excellente ressource interactive sur les pièges de t-SNE
+- UMAP - Alternative moderne à t-SNE
+> McInnes, L., Healy, J., & Melville, J. (2018)
+> "UMAP: Uniform Manifold Approximation and Projection"
+> Plus rapide, préserve mieux la structure globale
