@@ -168,7 +168,7 @@ Pour minimiser $$\tilde{\mathcal{L}}^{(t)}$$ par rapport à $$w_j$$, on dérive 
 
 $$\frac{\partial \tilde{\mathcal{L}}^{(t)}}{\partial w_j} = G_j + (H_j + \lambda) w_j = 0$$
 
-$$\boxed{w_j^* = -\frac{G_j}{H_j + \lambda}}$$H_j + \lambda}}$$
+$$\boxed{w_j^* = -\frac{G_j}{H_j + \lambda}}$$
 
 **Poids optimal de la feuille** $$j$$ :
 - Proportionnel à la somme des gradients (erreurs)
@@ -198,7 +198,7 @@ $$\boxed{\text{Gain} = \frac{1}{2} \left[ \frac{G_L^2}{H_L + \lambda} + \frac{G_
 
 **Split Finding Algorithm** :
 Pour chaque arbre t:
-1. Calculer g_i et h_i pour chaque observation
+1. Calculer $g_i$ et $h_i$ pour chaque observation
 2. Initialiser un arbre avec une seule feuille (toutes les observations)
 
 3. **Optimisations XGBoost** :
