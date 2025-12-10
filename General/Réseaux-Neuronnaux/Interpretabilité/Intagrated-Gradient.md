@@ -125,9 +125,11 @@ $$
 4. **Normalisation :** Normaliser les attributions pour la visualisation (min-max ou L2)
 
 **Formule pour un token :**
+
 $$
 \text{Attr}_{\text{token}} = \sum_{d=1}^{D} \text{IG}_{i,d}
 $$
+
 où $\$D$$ = dimension de l'embedding
 
 ---
