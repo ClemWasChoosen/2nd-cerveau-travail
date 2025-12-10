@@ -79,6 +79,7 @@ où $$m$$ = nombre de pas (typiquement 20-100)
 ### 4.3 Complétude (Completeness)
 
 **Formule :**
+
 $$
 \sum_{i=1}^{n} \text{IG}_i(x) = F(x) - F(x')
 $$
@@ -224,16 +225,14 @@ Tester 2-3 baselines différentes. Si résultats radicalement différents, le mo
 2. **Créer m points d'interpolation :**
    $$x^{(k)} = x' + \frac{k}{m}(x - x'), \quad k = 1, ..., m$$
 
-3. **Calculer les gradients à chaque point :**
-   $$g^{(k)}_i = \frac{\partial F(x^{(k)})}{\partial x_i}$$
+3. **Calculer les gradients à chaque point :** $$g^{(k)}_i = \frac{\partial F(x^{(k)})}{\partial x_i}$$
 
-4. **Approximer l'intégrale (moyenne des gradients) :**
-   $$\overline{g}_i = \frac{1}{m} \sum_{k=1}^{m} g^{(k)}_i$$
+4. **Approximer l'intégrale (moyenne des gradients) :** $$\overline{g}_i = \frac{1}{m} \sum_{k=1}^{m} g^{(k)}_i$$
 
-5. **Multiplier par la différence :**
+6. **Multiplier par la différence :**
    $$\text{IG}_i = (x_i - x'_i) \times \overline{g}_i$$
 
-6. **Normaliser si nécessaire :**
+7. **Normaliser si nécessaire :**
    $$\text{IG}^{\text{norm}}_i = \frac{\text{IG}_i}{\sqrt{\sum_j \text{IG}_j^2}}$$
 
 ---
@@ -282,7 +281,7 @@ $\$0.35 + 0.05 + 0.01 + 0.01 = 0.42 = 0.92 - 0.50$$ ✓
 - Kindermans, P.-J. et al. (2019). *"The (Un)reliability of saliency methods"*. Explainable AI.
 
 **Applications aux Transformers :**
-- Chefer, H. et al. (2021). *"Transformer Interpretability Beyond Attention Visualization"*. CVPR 2021.
+- Chefer, H. et al. (2021). *"Transformer Interpretability Beyond Attention Visualization"*. CVPR 2021. [[PDF]](https://arxiv.org/pdf/2012.09838) [[Arxiv]](https://arxiv.org/abs/2012.09838)
 
 ---
 
@@ -295,6 +294,7 @@ $$
 $$
 
 **Propriété clé :**
+
 $$
 \boxed{
 \sum_{i} \text{IG}_i(x) = F(x) - F(x') \quad \text{(Complétude)}
