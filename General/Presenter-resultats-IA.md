@@ -120,8 +120,8 @@ Toutes les métriques de classification dérivent de ces 4 valeurs. Comprendre c
 
 ### 2.2 Accuracy (Exactitude)
 
-**Formule mathématique :**
-$$ Accuracy = \frac{TP + TN}{TP + TN + FP + FN} = \frac{\text{Prédictions correctes}}{\text{Total des prédictions}} $$
+**Formule mathématique :**  
+$$Accuracy = \frac{TP + TN}{TP + TN + FP + FN} = \frac{\text{Prédictions correctes}}{\text{Total des prédictions}}$$
 
 **Quand l'utiliser ?**
 - Classes équilibrées (environ 50/50 ou proche)
@@ -156,8 +156,8 @@ print(f"Accuracy: {accuracy:.2%}")  # 99.05%
 
 ### 2.3 Precision (Précision)
 
-**Formule mathématique :**
-$$ Precision = \frac{TP}{TP + FP} = \frac{\text{Vrais positifs}}{\text{Tous les positifs prédits}} $$
+**Formule mathématique :**  
+$$Precision = \frac{TP}{TP + FP} = \frac{\text{Vrais positifs}}{\text{Tous les positifs prédits}}$$
 
 **Interprétation :** "Parmi tous les cas que le modèle a identifiés comme positifs, quelle proportion l'est vraiment ?"
 
@@ -187,8 +187,8 @@ Système de recommandation de produits premium :
 
 ### 2.4 Recall / Sensibilité (Rappel)
 
-**Formule mathématique :**
-$$ Recall = \frac{TP}{TP + FN} = \frac{\text{Vrais positifs}}{\text{Tous les positifs réels}} $$
+**Formule mathématique :**  
+$$Recall = \frac{TP}{TP + FN} = \frac{\text{Vrais positifs}}{\text{Tous les positifs réels}}$$
 
 **Interprétation :** "Parmi tous les cas réellement positifs, quelle proportion le modèle a-t-il détectée ?"
 
@@ -223,8 +223,8 @@ C'est souvent un compromis :
 
 ### 2.5 F1-Score
 
-**Formule mathématique :**
-$$ F1 = 2 \times \frac{Precision \times Recall}{Precision + Recall} = \frac{2 \times TP}{2 \times TP + FP + FN} $$
+**Formule mathématique :**  
+$$F1 = 2 \times \frac{Precision \times Recall}{Precision + Recall} = \frac{2 \times TP}{2 \times TP + FP + FN}$$
 
 **Interprétation :** Moyenne harmonique entre Precision et Recall (équilibre entre les deux).
 
@@ -244,14 +244,14 @@ Exemple :
 
 **Variantes du F1-Score :**
 
-1. **F1 Macro** : Moyenne des F1 de chaque classe (toutes les classes ont le même poids)
-   $$ F1_{macro} = \frac{1}{n} \sum_{i=1}^{n} F1_i $$
+1. **F1 Macro** : Moyenne des F1 de chaque classe (toutes les classes ont le même poids)  
+   $$F1_{macro} = \frac{1}{n} \sum_{i=1}^{n} F1_i$$
 
-2. **F1 Micro** : F1 global calculé sur l'ensemble des TP, FP, FN
-   $$ F1_{micro} = \frac{2 \times TP_{total}}{2 \times TP_{total} + FP_{total} + FN_{total}} $$
+2. **F1 Micro** : F1 global calculé sur l'ensemble des TP, FP, FN  
+   $$F1_{micro} = \frac{2 \times TP_{total}}{2 \times TP_{total} + FP_{total} + FN_{total}}$$
 
-3. **F1 Weighted** : Moyenne pondérée par le nombre d'échantillons par classe
-   $$ F1_{weighted} = \sum_{i=1}^{n} \frac{n_i}{N} F1_i $$
+3. **F1 Weighted** : Moyenne pondérée par le nombre d'échantillons par classe  
+   $$F1_{weighted} = \sum_{i=1}^{n} \frac{n_i}{N} F1_i$$ 
 
 **Quand utiliser quelle variante ?**
 - **Macro** : Toutes les classes ont la même importance (même les petites classes)
@@ -415,13 +415,13 @@ Détection de clients à risque de churn :
 
 ### 3.1 MAE (Mean Absolute Error)
 
-**Formule mathématique :**
-$$ MAE = \frac{1}{n} \sum_{i=1}^{n} |y_i - \hat{y}_i| $$
+**Formule mathématique :**  
+$$MAE = \frac{1}{n} \sum_{i=1}^{n} |y_i - \hat{y}_i|$$
 
 Où :
-- $$ y_i $$ = valeur réelle
-- $$ \hat{y}_i $$ = valeur prédite
-- $$ n $$ = nombre d'observations
+- $y_i$ = valeur réelle
+- $\hat{y}_i$ = valeur prédite
+- $n$ = nombre d'observations
 
 **Interprétation :**
 Erreur moyenne en valeur absolue, dans les mêmes unités que la variable cible.
@@ -446,8 +446,8 @@ Prédiction de prix immobiliers :
 
 ### 3.2 RMSE (Root Mean Squared Error)
 
-**Formule mathématique :**
-$$ RMSE = \sqrt{\frac{1}{n} \sum_{i=1}^{n} (y_i - \hat{y}_i)^2} $$
+**Formule mathématique :**  
+$$RMSE = \sqrt{\frac{1}{n} \sum_{i=1}^{n} (y_i - \hat{y}_i)^2}$$
 
 **Interprétation :**
 Racine carrée de la moyenne des erreurs au carré, dans les mêmes unités que la variable cible.
@@ -459,7 +459,7 @@ Racine carrée de la moyenne des erreurs au carré, dans les mêmes unités que 
 
 **Différence MAE vs RMSE :**
 
-{{{python
+```python
 import numpy as np
 
 # Exemple de prédictions
@@ -476,7 +476,7 @@ rmse2 = np.sqrt(np.mean((y_true - y_pred2)**2))
 print(f"Cas 2 - MAE: {mae2:.2f}, RMSE: {rmse2:.2f}")  # MAE: 5.00, RMSE: 11.18
 
 # Même MAE mais RMSE plus élevé car une grosse erreur
-}}}
+```
 
 **Quand préférer RMSE à MAE ?**
 - Quand les grandes erreurs sont inacceptables
@@ -495,13 +495,13 @@ print(f"Cas 2 - MAE: {mae2:.2f}, RMSE: {rmse2:.2f}")  # MAE: 5.00, RMSE: 11.18
 
 ### 3.3 R² (Coefficient de détermination)
 
-**Formule mathématique :**
-$$ R^2 = 1 - \frac{SS_{res}}{SS_{tot}} = 1 - \frac{\sum_{i=1}^{n} (y_i - \hat{y}_i)^2}{\sum_{i=1}^{n} (y_i - \bar{y})^2} $$
+**Formule mathématique :**  
+$$R^2 = 1 - \frac{SS_{res}}{SS_{tot}} = 1 - \frac{\sum_{i=1}^{n} (y_i - \hat{y}_i)^2}{\sum_{i=1}^{n} (y_i - \bar{y})^2}$$
 
 Où :
-- $$ SS_{res} $$ = Somme des carrés des résidus (erreur du modèle)
-- $$ SS_{tot} $$ = Somme des carrés totale (variance des données)
-- $$ \bar{y} $$ = Moyenne des valeurs réelles
+- $SS_{res}$ = Somme des carrés des résidus (erreur du modèle)
+- $SS_{tot}$ = Somme des carrés totale (variance des données)
+- $\bar{y}$ = Moyenne des valeurs réelles
 
 **Interprétation :**
 Proportion de la variance expliquée par le modèle.
@@ -538,8 +538,8 @@ Prédiction de consommation énergétique :
 
 ### 3.4 MAPE (Mean Absolute Percentage Error)
 
-**Formule mathématique :**
-$$ MAPE = \frac{100\%}{n} \sum_{i=1}^{n} \left| \frac{y_i - \hat{y}_i}{y_i} \right| $$
+**Formule mathématique :**  
+$$MAPE = \frac{100\%}{n} \sum_{i=1}^{n} \left| \frac{y_i - \hat{y}_i}{y_i} \right|$$
 
 **Interprétation :**
 Erreur moyenne en pourcentage.
@@ -550,7 +550,7 @@ Erreur moyenne en pourcentage.
 - Intuitif pour la direction ("erreur de X%")
 
 **Limites importantes :**
-1. **Undefined si $$ y_i = 0 $$** (division par zéro)
+1. **Undefined si $y_i = 0$** (division par zéro)
 2. **Asymétrique** : pénalise plus les sous-estimations que les sur-estimations
 3. **Biaisé vers les petites valeurs**
 
@@ -559,8 +559,8 @@ Erreur moyenne en pourcentage.
 - Prédire 110 au lieu de 100 : erreur = 9.1%
 → Asymétrie !
 
-**Alternative symétrique : sMAPE**
-$$ sMAPE = \frac{100\%}{n} \sum_{i=1}^{n} \frac{|y_i - \hat{y}_i|}{(|y_i| + |\hat{y}_i|)/2} $$
+**Alternative symétrique : sMAPE**  
+$$sMAPE = \frac{100\%}{n} \sum_{i=1}^{n} \frac{|y_i - \hat{y}_i|}{(|y_i| + |\hat{y}_i|)/2}$$
 
 **Visualisation PowerPoint recommandée :**
 - Affichage en pourcentage (très visuel)
@@ -615,7 +615,7 @@ Scatter plot avec :
 ### 3.6 Analyse des résidus
 
 **Définition :**
-Résidu = Erreur = $$ r_i = y_i - \hat{y}_i $$
+Résidu = Erreur = $r_i = y_i - \hat{y}_i$
 
 **Graphiques essentiels :**
 
@@ -750,11 +750,11 @@ Erreur typique:
 Mesure le chevauchement de n-grams entre texte généré et référence(s).
 
 **Formule simplifiée :**
-$$ BLEU = BP \times \exp\left(\sum_{n=1}^{N} w_n \log p_n\right) $$
+$$BLEU = BP \times \exp\left(\sum_{n=1}^{N} w_n \log p_n\right)$$
 
 Où :
-- $$ p_n $$ = précision des n-grams (unigrams, bigrams, trigrams, 4-grams)
-- $$ BP $$ = Brevity Penalty (pénalise les textes trop courts)
+- $p_n$ = précision des n-grams (unigrams, bigrams, trigrams, 4-grams)
+- $BP$ = Brevity Penalty (pénalise les textes trop courts)
 - Typiquement : BLEU-4 (jusqu'à 4-grams)
 
 **Interprétation :**
@@ -803,8 +803,8 @@ Utilise les embeddings contextuels de BERT pour comparer similarité sémantique
 **Définition :**
 Mesure de la "surprise" du modèle face à une séquence de mots.
 
-**Formule :**
-$$ Perplexity = \exp\left(-\frac{1}{N}\sum_{i=1}^{N} \log P(w_i | w_{1:i-1})\right) $$
+**Formule :**  
+$$Perplexity = \exp\left(-\frac{1}{N}\sum_{i=1}^{N} \log P(w_i | w_{1:i-1})\right)$$
 
 **Interprétation :**
 - **Faible perplexité** : Le modèle prédit bien (comprend le texte)
@@ -928,12 +928,12 @@ Le modèle prédit les 5 classes les plus probables. Correct si la vraie classe 
 
 #### IoU (Intersection over Union)
 
-**Formule mathématique :**
-$$ IoU = \frac{\text{Aire}(A \cap B)}{\text{Aire}(A \cup B)} = \frac{\text{Intersection}}{\text{Union}} $$
+**Formule mathématique :**  
+$$IoU = \frac{\text{Aire}(A \cap B)}{\text{Aire}(A \cup B)} = \frac{\text{Intersection}}{\text{Union}}$$
 
 Où :
-- $$ A $$ = Bounding box prédite
-- $$ B $$ = Bounding box réelle (ground truth)
+- $A$ = Bounding box prédite
+- $B$ = Bounding box réelle (ground truth)
 
 **Interprétation :**
 - **IoU = 1** : Parfait chevauchement
@@ -978,10 +978,10 @@ Aire sous la courbe Precision-Recall pour une classe donnée.
 
 #### mAP (mean Average Precision)
 
-**Formule :**
-$$ mAP = \frac{1}{C} \sum_{c=1}^{C} AP_c $$
+**Formule :**  
+$$mAP = \frac{1}{C} \sum_{c=1}^{C} AP_c$$
 
-Où $$ C $$ = nombre de classes
+Où $C$ = nombre de classes
 
 **Variantes importantes :**
 - **mAP@0.5** : IoU seuil = 0.5 (standard PASCAL VOC)
