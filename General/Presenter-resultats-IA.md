@@ -1068,7 +1068,7 @@ Montre quelles classes sont confondues entre elles.
 
 ## Table des matières
 
-1. [Métriques de Classification](#1-métriques-de-classification)
+1. [Métriques de Classification](#1-metriques-de-classification)
 2. [Métriques de Détection d'Objets (YOLO)](#2-métriques-de-détection-dobjets-yolo)
 3. [Métriques de Régression](#3-métriques-de-régression)
 4. [Visualisations Essentielles pour PowerPoint](#4-visualisations-essentielles-pour-powerpoint)
@@ -1172,6 +1172,10 @@ $$\text{Precision} = \frac{TP}{TP + FP}$$
 **Interprétation :**  
 Parmi les emails classés "urgents" par le modèle, quelle proportion l'est réellement ?
 
+**Analogie** : Tu es un pêcheur et tu veux attraper des thons. La précision mesure : parmi tous les poissons que tu as attrapés, quelle proportion sont vraiment des thons ?
+- Si tu attrapes 100 poissons et que 80 sont des thons → Précision = 80%
+- Si tu attrapes beaucoup de sardines par erreur → Ta précision baisse
+
 **Pourquoi l'utiliser ?**
 - Quand les **Faux Positifs sont coûteux**
 - Exemple : Classification "urgent" → si beaucoup de FP, on perd du temps à traiter des emails non-urgents
@@ -1197,6 +1201,10 @@ $$\text{Recall} = \frac{TP}{TP + FN}$$
 
 **Interprétation :**  
 Parmi tous les emails réellement urgents, quelle proportion a été détectée par le modèle ?
+
+**Analogie** : Il y a 200 thons dans l'océan. Le rappel mesure : combien de ces 200 thons as-tu réussi à attraper ?
+- Si tu attrapes 150 thons sur les 200 → Rappel = 75%
+- Même si tu n'attrapes que des thons (précision = 100%), si tu en rates beaucoup → Ton rappel est faible
 
 **Pourquoi l'utiliser ?**
 - Quand les **Faux Négatifs sont coûteux**
