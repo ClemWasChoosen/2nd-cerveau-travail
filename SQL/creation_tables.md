@@ -502,6 +502,11 @@ INSERT INTO employes (employe_id, nom) VALUES (seq_employe_id.NEXTVAL, 'Martin')
 
 ### 6.1 Spécification du Tablespace 🟢 **11g+**
 
+Un tablespace est un espace logique qui contient les objets stockés dans la base de données comme les tables ou les index.
+Un tablespace est composé d'au moins un datafile, c'est-à-dire un fichier de données qui est physiquement présent sur le serveur à l'endroit stipulé lors de sa création.
+Chaque datafile est constitué de segments d'au moins un extent (ou page) lui-même constitué d'au moins 3 blocs : l'élément le plus petit d'une base de données.
+L'extent n'a aucune signification particulière, c'est juste un groupe de blocs contigus pouvant accueillir des données, nous verrons néanmoins que cette notion d'extent peut poser des problèmes de gestion d'espace disque. 
+
 ```sql
 CREATE TABLE grosses_donnees (
     id NUMBER PRIMARY KEY,
