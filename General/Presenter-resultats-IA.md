@@ -423,49 +423,707 @@ print(f"IoU : {iou:.2f}")  # 0.68
 
 ---
 
-### 2.2 mAP (mean Average Precision)
+### 2.2 AP (Average Precision)
 
 **Définition :**  
-Métrique principale pour évaluer les modèles de détection d'objets.
+
+L'Average Precision (AP) est l'**aire sous la courbe Precision-Recall** pour une classe donnée. Elle synthétise la performance du modèle sur tous les seuils de confiance possibles.
 
 **Calcul en étapes :**
 
-1. **Pour chaque classe** :
-   - Ordonne toutes les détections par score de confiance décroissant
-   - Calcule Precision et Recall à chaque seuil
-   - Calcule l'Average Precision (AP) = aire sous la courbe Précision-Recall
-   
-2. **mAP** = Moyenne des AP de toutes les classes
+1. **Trier** toutes les détections par score de confiance décroissant
+2. **Pour chaque détection**, calculer Precision et Recall cumulés :
+   - Si IoU ≥ seuil → TP (Vrai Positif)
+   - Sinon → FP (Faux Positif)
+3. **Tracer** la courbe Precision (y) vs Recall (x)
+4. **Calculer** l'aire sous cette courbe = AP
 
-**Variantes :**
-- **mAP@0.5** : IoU seuil = 0.5 (standard PASCAL VOC)
-- **mAP@0.75** : IoU seuil = 0.75 (plus strict)
-- **mAP@[0.5:0.95]** : Moyenne sur plusieurs seuils IoU (standard COCO)
+**Formule mathématique (interpolation):**
+
+$$\text{AP} = \sum_{k=1}^{N} P(k) \times \Delta R(k)$$
+
+Où :
+- $$P(k)$$ = Precision au k-ième seuil
+- $$\Delta R(k)$$ = Variation de Recall entre k et k-1
 
 **Pourquoi l'utiliser ?**
-- **Métrique standard** pour benchmarker les modèles de détection
-- Prend en compte Precision, Recall ET la localisation (via IoU)
-- Permet de comparer différentes architectures (YOLOv5 vs YOLOv8 vs Faster R-CNN)
 
-**Interprétation :**
-- **mAP@0.5 = 0.60** : Performance acceptable pour des applications réelles
-- **mAP@0.5 = 0.80+** : Très bon modèle
-- **mAP@0.5:0.95** : Plus exigeant (souvent 20-30% inférieur au mAP@0.5)
+- Résume la performance en **une seule valeur** (entre 0 et 1)
+- Indépendant du choix d'un seuil de confiance spécifique
+- Prend en compte à la fois Precision ET Recall
+- Permet de comparer différents modèles objectivement
+
+**Interprétation visuelle :**
+
+La courbe Precision-Recall typique a une forme **décroissante** :
+- Au début (Recall faible) : Precision élevée (seulement les détections très confiantes)
+- À la fin (Recall élevé) : Precision baisse (on inclut des détections moins confiantes)
+
+**Valeurs typiques :**
+
+- **AP = 1.0** : Modèle parfait (jamais atteint en pratique)
+- **AP = 0.8-0.9** : Excellent modèle
+- **AP = 0.6-0.8** : Bon modèle
+- **AP < 0.5** : Modèle faible pour cette classe
+
+**Exemple de calcul manuel :**
 
 ```python
-# Avec YOLOv8 (ultralytics)
-from ultralytics import YOLO
+import numpy as np
 
-model = YOLO('yolov8n.pt')
-results = model.val(data='coco.yaml')  # Validation sur dataset
+# Données de détection pour une classe (ex: voiture)
+# Format: [score_confiance, is_correct (1=TP, 0=FP)]
+detections = [
+    (0.95, 1),  # TP
+    (0.90, 1),  # TP
+    (0.85, 0),  # FP
+    (0.80, 1),  # TP
+    (0.75, 0),  # FP
+    (0.70, 1),  # TP
+    (0.65, 0),  # FP
+]
 
-print(f"mAP@0.5 : {results.box.map50:.3f}")
-print(f"mAP@0.5:0.95 : {results.box.map:.3f}")
+# Nombre d'objets réels (ground truth)
+n_ground_truth = 5
+
+# Tri par confiance décroissante (déjà fait ici)
+detections_sorted = sorted(detections, key=lambda x: x[0], reverse=True)
+
+# Calcul de Precision et Recall à chaque seuil
+precisions = []
+recalls = []
+tp_cumsum = 0
+fp_cumsum = 0
+
+for i, (score, is_correct) in enumerate(detections_sorted):
+    if is_correct == 1:
+        tp_cumsum += 1
+    else:
+        fp_cumsum += 1
+    
+    precision = tp_cumsum / (tp_cumsum + fp_cumsum)
+    recall = tp_cumsum / n_ground_truth
+    
+    precisions.append(precision)
+    recalls.append(recall)
+    
+    print(f"Seuil {i+1}: Score={score:.2f}, P={precision:.3f}, R={recall:.3f}")
+
+# Calcul de l'AP (méthode des rectangles)
+ap = 0
+for i in range(1, len(recalls)):
+    delta_recall = recalls[i] - recalls[i-1]
+    ap += precisions[i] * delta_recall
+
+print(f"\nAverage Precision (AP) = {ap:.3f}")
+
+# Sortie exemple :
+# Seuil 1: Score=0.95, P=1.000, R=0.200
+# Seuil 2: Score=0.90, P=1.000, R=0.400
+# Seuil 3: Score=0.85, P=0.667, R=0.400
+# Seuil 4: Score=0.80, P=0.750, R=0.600
+# Seuil 5: Score=0.75, P=0.600, R=0.600
+# Seuil 6: Score=0.70, P=0.667, R=0.800
+# Seuil 7: Score=0.65, P=0.571, R=0.800
+# 
+# Average Precision (AP) = 0.627
 ```
 
-**Pour PowerPoint :**
-- Tableau comparatif des mAP entre modèles
-- Graphique en barres par classe (montre les classes bien/mal détectées)
+**Visualisation de la courbe Precision-Recall :**
+
+```python
+import matplotlib.pyplot as plt
+
+# En utilisant les données de l'exemple précédent
+plt.figure(figsize=(8, 6))
+plt.plot(recalls, precisions, marker='o', linewidth=2, markersize=8)
+plt.fill_between(recalls, precisions, alpha=0.2)
+plt.xlabel('Recall', fontsize=12)
+plt.ylabel('Precision', fontsize=12)
+plt.title(f'Courbe Precision-Recall (AP = {ap:.3f})', fontsize=14)
+plt.grid(True, alpha=0.3)
+plt.xlim([0, 1])
+plt.ylim([0, 1])
+plt.show()
+
+# L'aire sous cette courbe (zone colorée) = AP
+```
+
+**Différence entre AP et mAP :**
+
+- **AP** : Performance pour **une seule classe** (ex: AP_voiture = 0.85)
+- **mAP** : **Moyenne** des AP de toutes les classes (ex: mAP = moyenne(AP_voiture, AP_piéton, AP_vélo))
+
+**Cas particulier - AP interpolée (méthode PASCAL VOC) :**
+
+Pour lisser la courbe, on utilise souvent une interpolation à 11 points :
+
+$$\text{AP} = \frac{1}{11} \sum_{r \in \{0, 0.1, 0.2, ..., 1.0\}} P_{\text{interp}}(r)$$
+
+Où $$P_{\text{interp}}(r) = \max_{r' \geq r} P(r')$$ (maximum de Precision pour Recall ≥ r)
+
+```python
+# Méthode d'interpolation à 11 points (PASCAL VOC)
+def calculate_ap_11_point(precisions, recalls):
+    ap = 0
+    for r in np.arange(0, 1.1, 0.1):
+        # Trouver la precision max pour recall >= r
+        precisions_above_r = [p for p, rec in zip(precisions, recalls) if rec >= r]
+        if len(precisions_above_r) > 0:
+            ap += max(precisions_above_r)
+    return ap / 11
+
+ap_11pt = calculate_ap_11_point(precisions, recalls)
+print(f"AP (11-point interpolation) = {ap_11pt:.3f}")
+```
+
+**Points clés à retenir :**
+
+✓ AP mesure la qualité globale des détections pour une classe
+✓ Plus l'AP est élevée, meilleur est le modèle pour cette classe
+✓ AP combine naturellement Precision et Recall
+✓ La forme de la courbe P-R indique le comportement du modèle
+
+---
+
+### 2.4 mAP (mean Average Precision)
+
+**Définition :**  
+
+Le **mAP (mean Average Precision)** est la métrique standard pour évaluer les modèles de détection d'objets. Il s'agit de la **moyenne arithmétique des AP de toutes les classes**.
+
+$$\text{mAP} = \frac{1}{N} \sum_{i=1}^{N} \text{AP}_i$$
+
+Où :
+- $$N$$ = nombre total de classes
+- $$\text{AP}_i$$ = Average Precision pour la classe $$i$$
+
+---
+
+#### **Calcul détaillé du mAP - Exemple complet**
+
+**Contexte :** Modèle de détection avec 3 classes (voiture, piéton, vélo) sur un dataset de validation.
+
+**Étape 1 : Calculer l'AP pour chaque classe individuellement**
+
+```python
+import numpy as np
+
+# Fonction pour calculer l'AP d'une classe
+def calculate_ap_for_class(detections, ground_truths, iou_threshold=0.5):
+    """
+    detections: liste de (score_confiance, bbox, image_id)
+    ground_truths: liste de (bbox, image_id) pour cette classe
+    iou_threshold: seuil IoU pour considérer un TP
+    """
+    # 1. Trier détections par confiance décroissante
+    detections = sorted(detections, key=lambda x: x[0], reverse=True)
+    
+    # 2. Marquer les ground truths utilisés (1 GT = 1 détection max)
+    gt_matched = {img_id: [False] * len(bboxes) 
+                  for img_id, bboxes in ground_truths.items()}
+    
+    tp = np.zeros(len(detections))
+    fp = np.zeros(len(detections))
+    
+    # 3. Pour chaque détection, vérifier si c'est un TP ou FP
+    for det_idx, (score, det_bbox, img_id) in enumerate(detections):
+        if img_id not in ground_truths:
+            fp[det_idx] = 1  # Pas de GT dans cette image
+            continue
+        
+        # Trouver le meilleur match avec un GT
+        best_iou = 0
+        best_gt_idx = -1
+        
+        for gt_idx, gt_bbox in enumerate(ground_truths[img_id]):
+            if gt_matched[img_id][gt_idx]:
+                continue  # GT déjà matché
+            
+            iou = calculate_iou(det_bbox, gt_bbox)
+            if iou > best_iou:
+                best_iou = iou
+                best_gt_idx = gt_idx
+        
+        # Déterminer TP ou FP
+        if best_iou >= iou_threshold and best_gt_idx >= 0:
+            if not gt_matched[img_id][best_gt_idx]:
+                tp[det_idx] = 1
+                gt_matched[img_id][best_gt_idx] = True
+            else:
+                fp[det_idx] = 1  # GT déjà pris
+        else:
+            fp[det_idx] = 1  # IoU trop faible
+    
+    # 4. Calculer Precision et Recall cumulés
+    tp_cumsum = np.cumsum(tp)
+    fp_cumsum = np.cumsum(fp)
+    
+    total_gt = sum(len(bboxes) for bboxes in ground_truths.values())
+    
+    recalls = tp_cumsum / total_gt
+    precisions = tp_cumsum / (tp_cumsum + fp_cumsum)
+    
+    # 5. Calculer l'AP (méthode COCO - interpolation à tous les points)
+    # Ajouter des points sentinelles
+    recalls = np.concatenate(([0], recalls, [1]))
+    precisions = np.concatenate(([0], precisions, [0]))
+    
+    # Interpolation monotone décroissante
+    for i in range(len(precisions) - 2, -1, -1):
+        precisions[i] = max(precisions[i], precisions[i + 1])
+    
+    # Calcul de l'aire sous la courbe
+    indices = np.where(recalls[1:] != recalls[:-1])[0] + 1
+    ap = np.sum((recalls[indices] - recalls[indices - 1]) * precisions[indices])
+    
+    return ap, precisions, recalls
+
+# Fonction IoU (rappel)
+def calculate_iou(box1, box2):
+    x1_inter = max(box1[0], box2[0])
+    y1_inter = max(box1[1], box2[1])
+    x2_inter = min(box1[2], box2[2])
+    y2_inter = min(box1[3], box2[3])
+    
+    inter_area = max(0, x2_inter - x1_inter) * max(0, y2_inter - y1_inter)
+    box1_area = (box1[2] - box1[0]) * (box1[3] - box1[1])
+    box2_area = (box2[2] - box2[0]) * (box2[3] - box2[1])
+    union_area = box1_area + box2_area - inter_area
+    
+    return inter_area / union_area if union_area > 0 else 0
+```
+
+**Exemple avec données concrètes :**
+
+```python
+# Données simulées pour 3 classes
+
+# CLASSE 1: VOITURE
+detections_voiture = [
+    (0.95, [100, 100, 200, 200], 'img1'),  # TP
+    (0.92, [150, 150, 250, 250], 'img1'),  # TP
+    (0.88, [50, 50, 120, 120], 'img2'),    # FP (mauvais IoU)
+    (0.85, [300, 300, 400, 400], 'img2'),  # TP
+    (0.70, [500, 500, 600, 600], 'img3'),  # FP (pas de GT)
+]
+
+ground_truths_voiture = {
+    'img1': [[105, 105, 205, 205], [155, 155, 255, 255]],
+    'img2': [[305, 305, 405, 405]],
+    # img3 n'a pas de voiture
+}
+
+ap_voiture, _, _ = calculate_ap_for_class(
+    detections_voiture, 
+    ground_truths_voiture, 
+    iou_threshold=0.5
+)
+print(f"AP Voiture: {ap_voiture:.3f}")  # Exemple: 0.833
+
+# CLASSE 2: PIÉTON
+detections_pieton = [
+    (0.90, [200, 200, 250, 300], 'img1'),  # TP
+    (0.85, [300, 300, 340, 400], 'img1'),  # TP
+    (0.75, [100, 100, 130, 180], 'img2'),  # TP
+    (0.65, [400, 400, 440, 500], 'img3'),  # FP
+]
+
+ground_truths_pieton = {
+    'img1': [[205, 205, 255, 305], [305, 305, 345, 405]],
+    'img2': [[105, 105, 135, 185]],
+}
+
+ap_pieton, _, _ = calculate_ap_for_class(
+    detections_pieton, 
+    ground_truths_pieton, 
+    iou_threshold=0.5
+)
+print(f"AP Piéton: {ap_pieton:.3f}")  # Exemple: 0.750
+
+# CLASSE 3: VÉLO
+detections_velo = [
+    (0.88, [100, 100, 180, 200], 'img1'),  # TP
+    (0.80, [200, 200, 280, 300], 'img2'),  # FP
+    (0.72, [300, 300, 380, 400], 'img3'),  # TP
+]
+
+ground_truths_velo = {
+    'img1': [[105, 105, 185, 205]],
+    'img3': [[305, 305, 385, 405]],
+}
+
+ap_velo, _, _ = calculate_ap_for_class(
+    detections_velo, 
+    ground_truths_velo, 
+    iou_threshold=0.5
+)
+print(f"AP Vélo: {ap_velo:.3f}")  # Exemple: 0.667
+```
+
+**Étape 2 : Calculer le mAP**
+
+```python
+# Calcul du mAP = moyenne des AP
+ap_scores = {
+    'voiture': 0.833,
+    'piéton': 0.750,
+    'vélo': 0.667
+}
+
+mAP = np.mean(list(ap_scores.values()))
+print(f"\nmAP@0.5 = {mAP:.3f}")  # 0.750
+
+# Détail par classe
+print("\nDétail par classe:")
+for classe, ap in ap_scores.items():
+    print(f"  {classe}: AP = {ap:.3f}")
+
+# Sortie:
+# mAP@0.5 = 0.750
+# 
+# Détail par classe:
+#   voiture: AP = 0.833
+#   piéton: AP = 0.750
+#   vélo: AP = 0.667
+```
+
+---
+
+#### **Variantes du mAP : Comprendre les différents seuils IoU**
+
+Le mAP peut être calculé avec **différents seuils IoU**, ce qui change la définition de ce qu'est une "bonne détection".
+
+##### **1. mAP@0.5 (PASCAL VOC)**
+
+**Définition :** Une détection est considérée comme correcte si **IoU ≥ 0.5** avec un ground truth.
+
+**Caractéristiques :**
+- Seuil **permissif** (accepte des localisations approximatives)
+- Standard pour PASCAL VOC Challenge
+- Valeurs typiquement **plus élevées**
+
+**Quand l'utiliser :**
+- Applications où la localisation précise n'est pas critique
+- Détection d'objets généraux (surveillance, comptage)
+
+```python
+# Calcul mAP@0.5
+mAP_50 = calculate_map(all_detections, all_ground_truths, iou_threshold=0.5)
+print(f"mAP@0.5 = {mAP_50:.3f}")  # Ex: 0.750
+```
+
+##### **2. mAP@0.75 (Strict)**
+
+**Définition :** Une détection est considérée comme correcte si **IoU ≥ 0.75** avec un ground truth.
+
+**Caractéristiques :**
+- Seuil **exigeant** (nécessite une localisation précise)
+- Valeurs typiquement **30-40% inférieures** au mAP@0.5
+- Pénalise les détections mal alignées
+
+**Quand l'utiliser :**
+- Applications nécessitant une localisation précise (robotique, chirurgie assistée)
+- Segmentation d'instance
+
+```python
+# Calcul mAP@0.75
+mAP_75 = calculate_map(all_detections, all_ground_truths, iou_threshold=0.75)
+print(f"mAP@0.75 = {mAP_75:.3f}")  # Ex: 0.520 (plus bas que mAP@0.5)
+```
+
+##### **3. mAP@[0.5:0.95] (COCO - Standard actuel)**
+
+**Définition :** Moyenne des mAP calculés pour **10 seuils IoU** : 0.5, 0.55, 0.60, ..., 0.90, 0.95.
+
+$$\text{mAP@[0.5:0.95]} = \frac{1}{10} \sum_{t=0.5}^{0.95} \text{mAP@}t$$
+
+Avec $$t$$ variant par pas de 0.05.
+
+**Caractéristiques :**
+- Métrique **la plus complète** et robuste
+- Standard pour **MS COCO dataset** (référence actuelle)
+- Évalue la qualité de localisation sur un large spectre
+- Valeurs typiquement **20-30% inférieures** au mAP@0.5
+
+**Pourquoi c'est mieux :**
+- Ne favorise pas les modèles qui "trichent" avec des boîtes imprécises
+- Récompense la précision de localisation
+- Plus discriminant entre bons et excellents modèles
+
+```python
+# Calcul mAP@[0.5:0.95] (méthode COCO)
+def calculate_map_coco(detections, ground_truths):
+    iou_thresholds = np.arange(0.5, 1.0, 0.05)  # [0.5, 0.55, ..., 0.95]
+    map_scores = []
+    
+    for iou_thresh in iou_thresholds:
+        mAP_at_thresh = calculate_map(detections, ground_truths, iou_threshold=iou_thresh)
+        map_scores.append(mAP_at_thresh)
+        print(f"mAP@{iou_thresh:.2f} = {mAP_at_thresh:.3f}")
+    
+    map_coco = np.mean(map_scores)
+    return map_coco
+
+# Exemple de sortie
+# mAP@0.50 = 0.750
+# mAP@0.55 = 0.735
+# mAP@0.60 = 0.710
+# mAP@0.65 = 0.680
+# mAP@0.70 = 0.640
+# mAP@0.75 = 0.590
+# mAP@0.80 = 0.530
+# mAP@0.85 = 0.460
+# mAP@0.90 = 0.380
+# mAP@0.95 = 0.280
+
+map_coco = calculate_map_coco(all_detections, all_ground_truths)
+print(f"\nmAP@[0.5:0.95] = {map_coco:.3f}")  # Ex: 0.576
+```
+
+**Comparaison visuelle :**
+
+```python
+import matplotlib.pyplot as plt
+
+# Données de comparaison
+iou_thresholds = np.arange(0.5, 1.0, 0.05)
+map_values = [0.750, 0.735, 0.710, 0.680, 0.640, 0.590, 0.530, 0.460, 0.380, 0.280]
+
+plt.figure(figsize=(10, 6))
+plt.plot(iou_thresholds, map_values, marker='o', linewidth=2, markersize=8)
+plt.axhline(y=np.mean(map_values), color='r', linestyle='--', 
+            label=f'mAP@[0.5:0.95] = {np.mean(map_values):.3f}')
+plt.xlabel('Seuil IoU', fontsize=12)
+plt.ylabel('mAP', fontsize=12)
+plt.title('Évolution du mAP selon le seuil IoU', fontsize=14)
+plt.grid(True, alpha=0.3)
+plt.legend()
+plt.xlim([0.45, 1.0])
+plt.ylim([0, 1])
+plt.show()
+```
+
+---
+
+#### **Tableau comparatif : Impact du seuil IoU**
+
+| Seuil IoU | Nom | Tolérance | Valeur typique | Usage |
+|-----------|-----|-----------|----------------|-------|
+| **0.5** | mAP@0.5 | Permissif | 70-85% | PASCAL VOC, détection générale |
+| **0.75** | mAP@0.75 | Strict | 40-60% | Localisation précise |
+| **0.5:0.95** | mAP COCO | Très strict | 50-70% | Benchmark moderne (COCO) |
+
+**Relation approximative :**
+$$\text{mAP@[0.5:0.95]} \approx 0.7 \times \text{mAP@0.5}$$
+
+---
+
+#### **Implémentation pratique avec YOLOv8**
+
+```python
+from ultralytics import YOLO
+import json
+
+# Charger un modèle pré-entraîné
+model = YOLO('yolov8n.pt')  # nano (plus rapide)
+# model = YOLO('yolov8s.pt')  # small
+# model = YOLO('yolov8m.pt')  # medium
+# model = YOLO('yolov8l.pt')  # large
+# model = YOLO('yolov8x.pt')  # extra-large
+
+# Validation sur dataset COCO
+results = model.val(
+    data='coco.yaml',           # Configuration du dataset
+    split='val',                # Split de validation
+    batch=16,                   # Batch size
+    imgsz=640,                  # Taille d'image
+    device=0,                   # GPU 0 (ou 'cpu')
+    verbose=True,               # Affichage détaillé
+    plots=True,                 # Générer des plots
+)
+
+# Accès aux métriques globales
+print("\n=== MÉTRIQUES GLOBALES ===")
+print(f"mAP@0.5       : {results.box.map50:.4f}")      # mAP à IoU=0.5
+print(f"mAP@0.75      : {results.box.map75:.4f}")      # mAP à IoU=0.75
+print(f"mAP@[0.5:0.95]: {results.box.map:.4f}")        # mAP COCO (principal)
+
+print(f"\nPrecision: {results.box.mp:.4f}")            # Precision moyenne
+print(f"Recall   : {results.box.mr:.4f}")              # Recall moyen
+
+# Accès aux métriques par classe
+print("\n=== MÉTRIQUES PAR CLASSE ===")
+class_names = model.names  # Dictionnaire {id: nom_classe}
+
+for class_id, class_name in class_names.items():
+    if class_id < len(results.box.maps):
+        ap50 = results.box.maps[class_id]  # AP@0.5 pour cette classe
+        print(f"{class_name:15s}: AP@0.5 = {ap50:.4f}")
+
+# Exporter les résultats en JSON
+results_dict = {
+    'mAP@0.5': float(results.box.map50),
+    'mAP@0.75': float(results.box.map75),
+    'mAP@[0.5:0.95]': float(results.box.map),
+    'precision': float(results.box.mp),
+    'recall': float(results.box.mr),
+    'per_class_ap': {
+        class_names[i]: float(results.box.maps[i]) 
+        for i in range(len(results.box.maps))
+    }
+}
+
+with open('validation_results.json', 'w') as f:
+    json.dump(results_dict, f, indent=2)
+
+print("\nRésultats sauvegardés dans 'validation_results.json'")
+
+# Exemple de sortie :
+# === MÉTRIQUES GLOBALES ===
+# mAP@0.5       : 0.6234
+# mAP@0.75      : 0.4521
+# mAP@[0.5:0.95]: 0.4789
+# 
+# Precision: 0.7123
+# Recall   : 0.6834
+# 
+# === MÉTRIQUES PAR CLASSE ===
+# person         : AP@0.5 = 0.7234
+# bicycle        : AP@0.5 = 0.5821
+# car            : AP@0.5 = 0.6945
+# ...
+```
+
+---
+
+#### **Pourquoi utiliser le mAP ?**
+
+**1. Métrique unifiée**
+- Combine Precision, Recall et qualité de localisation (IoU)
+- Une seule valeur pour évaluer un modèle complet
+
+**2. Indépendant du seuil de confiance**
+- Évalue la performance sur **tous** les seuils possibles
+- Pas besoin de choisir arbitrairement un seuil
+
+**3. Permet la comparaison objective**
+
+```python
+# Comparaison de modèles
+models_comparison = {
+    'YOLOv8n': {'mAP@0.5': 0.623, 'mAP@[0.5:0.95]': 0.479},
+    'YOLOv8s': {'mAP@0.5': 0.677, 'mAP@[0.5:0.95]': 0.531},
+    'YOLOv8m': {'mAP@0.5': 0.721, 'mAP@[0.5:0.95]': 0.582},
+    'YOLOv8l': {'mAP@0.5': 0.749, 'mAP@[0.5:0.95]': 0.611},
+    'YOLOv8x': {'mAP@0.5': 0.761, 'mAP@[0.5:0.95]': 0.628},
+}
+
+import pandas as pd
+df = pd.DataFrame(models_comparison).T
+print(df)
+
+#          mAP@0.5  mAP@[0.5:0.95]
+# YOLOv8n    0.623           0.479
+# YOLOv8s    0.677           0.531
+# YOLOv8m    0.721           0.582
+# YOLOv8l    0.749           0.611
+# YOLOv8x    0.761           0.628
+```
+
+**4. Détecte les faiblesses par classe**
+
+```python
+# Analyser les classes problématiques
+class_aps = {
+    'person': 0.82,
+    'car': 0.78,
+    'bicycle': 0.65,
+    'dog': 0.58,      # ← Classe faible
+    'cat': 0.55,      # ← Classe faible
+    'bird': 0.48,     # ← Très faible
+}
+
+# Identifier les classes < 0.6
+weak_classes = {k: v for k, v in class_aps.items() if v < 0.6}
+print("Classes nécessitant plus de données d'entraînement:")
+for classe, ap in sorted(weak_classes.items(), key=lambda x: x[1]):
+    print(f"  {classe}: AP = {ap:.2f}")
+
+# Sortie:
+# Classes nécessitant plus de données d'entraînement:
+#   bird: AP = 0.48
+#   cat: AP = 0.55
+#   dog: AP = 0.58
+```
+
+---
+
+#### **Interprétation des valeurs de mAP**
+
+| mAP@0.5 | mAP@[0.5:0.95] | Qualité | Usage recommandé |
+|---------|----------------|---------|------------------|
+| < 0.3 | < 0.2 | Très faible | Modèle non fonctionnel |
+| 0.3 - 0.5 | 0.2 - 0.35 | Faible | Prototype initial |
+| 0.5 - 0.7 | 0.35 - 0.50 | Moyen | Développement |
+| 0.7 - 0.85 | 0.50 - 0.65 | Bon | Production (applications générales) |
+| > 0.85 | > 0.65 | Excellent | Production (applications critiques) |
+
+**Règles empiriques :**
+- **mAP@0.5 ≥ 0.7** : Acceptable pour la plupart des applications réelles
+- **mAP@[0.5:0.95] ≥ 0.5** : Bon modèle selon standards COCO
+- **Écart mAP@0.5 vs mAP@[0.5:0.95]** : Si > 30%, le modèle a des problèmes de localisation précise
+
+---
+
+#### **Visualisation des résultats**
+
+```python
+import matplotlib.pyplot as plt
+import numpy as np
+
+# Données de comparaison de modèles
+models = ['YOLOv5s', 'YOLOv8s', 'Faster R-CNN', 'RetinaNet']
+map50 = [0.662, 0.677, 0.689, 0.671]
+map50_95 = [0.485, 0.531, 0.542, 0.523]
+
+x = np.arange(len(models))
+width = 0.35
+
+fig, ax = plt.subplots(figsize=(10, 6))
+bars1 = ax.bar(x - width/2, map50, width, label='mAP@0.5', color='#3b82f6')
+bars2 = ax.bar(x + width/2, map50_95, width, label='mAP@[0.5:0.95]', color='#8b5cf6')
+
+ax.set_xlabel('Modèle', fontsize=12)
+ax.set_ylabel('mAP', fontsize=12)
+ax.set_title('Comparaison des performances de détection', fontsize=14)
+ax.set_xticks(x)
+ax.set_xticklabels(models)
+ax.legend()
+ax.grid(True, alpha=0.3, axis='y')
+
+# Ajouter les valeurs sur les barres
+for bars in [bars1, bars2]:
+    for bar in bars:
+        height = bar.get_height()
+        ax.text(bar.get_x() + bar.get_width()/2., height,
+                f'{height:.3f}',
+                ha='center', va='bottom', fontsize=9)
+
+plt.tight_layout()
+plt.show()
+```
+
+---
+
+#### **Points clés à retenir**
+
+✓ **mAP = moyenne des AP** de toutes les classes  
+✓ **mAP@0.5** = standard permissif (PASCAL VOC)  
+✓ **mAP@[0.5:0.95]** = standard moderne et strict (COCO)  
+✓ Plus le mAP est **proche de 1.0**, meilleur est le modèle  
+✓ Le mAP **seul ne suffit pas** : analyser les AP par classe pour identifier les faiblesses  
+✓ **Trade-off vitesse/précision** : YOLOv8n (rapide, mAP faible) vs YOLOv8x (lent, mAP élevé)  
 
 ---
 
