@@ -382,6 +382,8 @@ $$\sigma_{\text{global}}^2 = \mathbb{E}[\sigma_{\mathcal{B}}^2]$$
 
 ## 7. Architectures Classiques
 
+De manière générale, le "backbone (colonne vertebrale)" extrait la feature map à plusieurs résolutions différentes. Le "neck (cou)" combine ces maps et enfin, la "head (tête)", réalise la prédiction finale (bounding box, classe associée, ...).  
+
 ### 7.1 LeNet-5 (1998) - Yann LeCun
 
 **Première CNN moderne** : Reconnaissance de chiffres manuscrits (MNIST)
