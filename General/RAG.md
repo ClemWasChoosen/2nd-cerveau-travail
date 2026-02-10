@@ -266,7 +266,7 @@ print(f"Sim(text1, text3): {cosine_similarity(embedding1, embedding3):.3f}")  # 
 #### 3.2.1 Similarité Cosinus
 
 **Formule :**
-$$\text{cosine\_sim}(a, b) = \frac{a \cdot b}{||a|| \cdot ||b||} = \frac{\sum_{i=1}^{d} a_i b_i}{\sqrt{\sum_{i=1}^{d} a_i^2} \cdot \sqrt{\sum_{i=1}^{d} b_i^2}}$$
+$`\text{cosine\_sim}(a, b) = \frac{a \cdot b}{||a|| \cdot ||b||} = \frac{\sum_{i=1}^{d} a_i b_i}{\sqrt{\sum_{i=1}^{d} a_i^2} \cdot \sqrt{\sum_{i=1}^{d} b_i^2}}`$
 
 **Propriétés :**
 - Valeurs : $$[-1, 1]$$
@@ -281,7 +281,7 @@ $$\text{cosine\_sim}(a, b) = \frac{a \cdot b}{||a|| \cdot ||b||} = \frac{\sum_{i
 #### 3.2.2 Distance Euclidienne
 
 **Formule :**
-$$\text{euclidean\_dist}(a, b) = \sqrt{\sum_{i=1}^{d} (a_i - b_i)^2}$$
+$`\text{euclidean\_dist}(a, b) = \sqrt{\sum_{i=1}^{d} (a_i - b_i)^2}`$
 
 **Propriétés :**
 - Valeurs : $$[0, \infty)$$
@@ -316,11 +316,11 @@ print(f"Euclidean dist(a,c): {euc_ac:.3f}")  # 1.000
 #### 3.2.3 Dot Product
 
 **Formule :**
-$$\text{dot\_product}(a, b) = \sum_{i=1}^{d} a_i b_i$$
+$`\text{dot\_product}(a, b) = \sum_{i=1}^{d} a_i b_i`$
 
 **Relation avec cosinus :**
 Si $$a$$ et $$b$$ sont normalisés ($$||a|| = ||b|| = 1$$) :
-$$\text{dot\_product}(a, b) = \text{cosine\_sim}(a, b)$$
+$`\text{dot\_product}(a, b) = \text{cosine\_sim}(a, b)`$
 
 **Pourquoi utiliser le dot product ?**
 - Plus rapide à calculer (pas de normalisation)
