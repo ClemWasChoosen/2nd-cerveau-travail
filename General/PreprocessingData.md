@@ -19,7 +19,7 @@
 
 <br>
 
-## 1. Introduction {#introduction}
+## 1. Introduction (#introduction)
 
 Le preprocessing (ou prétraitement) des données représente **80% du temps** d'un projet de Machine Learning :cite[ekx]. La qualité des données d'entrée détermine directement la performance du modèle final selon le principe **"Garbage In, Garbage Out"**.
 
@@ -35,7 +35,7 @@ Ce cours couvre l'ensemble des étapes de preprocessing dans l'ordre optimal, en
 
 <br>
 
-## 2. Phase 1 : Compréhension et Exploration des Données {#phase-1}
+## 2. Phase 1 : Compréhension et Exploration des Données (#phase-1)
 
 ### 2.1 Objectif
 
@@ -91,7 +91,7 @@ df.boxplot(figsize=(15,10))
 
 <br>
 
-## 3. Phase 2 : Nettoyage des Données {#phase-2}
+## 3. Phase 2 : Nettoyage des Données (#phase-2)
 
 ### 3.1 Gestion des Doublons
 
@@ -131,7 +131,7 @@ df['temperature_celsius'] = df['temperature_fahrenheit'].apply(lambda x: (x - 32
 
 <br>
 
-## 4. Phase 3 : Gestion des Valeurs Manquantes {#phase-3}
+## 4. Phase 3 : Gestion des Valeurs Manquantes (#phase-3)
 
 ### 4.1 Types de Données Manquantes
 
@@ -272,7 +272,7 @@ df_imputed = imputer.fit_transform(df)
 
 <br>
 
-## 5. Phase 4 : Détection et Traitement des Outliers {#phase-4}
+## 5. Phase 4 : Détection et Traitement des Outliers (#phase-4)
 
 ### 5.1 Qu'est-ce qu'un Outlier ?
 
@@ -387,7 +387,7 @@ df['colonne_winsorized'] = winsorize(df['colonne'], limits=[0.01, 0.01])
 
 <br>
 
-## 6. Phase 5 : Encodage des Variables Catégorielles {#phase-5}
+## 6. Phase 5 : Encodage des Variables Catégorielles (#phase-5)
 
 ### 6.1 Pourquoi Encoder ?
 
@@ -469,7 +469,7 @@ df_test['categorie_encoded'] = df_test['categorie'].map(target_mean)
 
 <br>
 
-## 7. Phase 6 : Normalisation et Standardisation {#phase-6}
+## 7. Phase 6 : Normalisation et Standardisation (#phase-6)
 
 ### 7.1 Pourquoi Scaler les Données ?
 
@@ -564,7 +564,7 @@ df_robust = scaler.fit_transform(df[['col1', 'col2']])
 
 <br>
 
-## 8. Phase 7 : Feature Engineering {#phase-7}
+## 8. Phase 7 : Feature Engineering (#phase-7)
 
 ### 8.1 Définition
 
@@ -697,7 +697,7 @@ selected = X_train.columns[lasso.coef_ != 0]
 
 <br>
 
-## 9. Phase 8 : Séparation des Données (Train/Validation/Test) {#phase-8}
+## 9. Phase 8 : Séparation des Données (Train/Validation/Test) (#phase-8)
 
 ### 9.1 Pourquoi Séparer ?
 
@@ -770,7 +770,7 @@ for train_index, test_index in tscv.split(X):
 
 <br>
 
-## 10. Phase 9 : Gestion du Déséquilibre des Classes {#phase-9}
+## 10. Phase 9 : Gestion du Déséquilibre des Classes (#phase-9)
 
 ### 10.1 Détection
 
@@ -883,7 +883,7 @@ model = RandomForestClassifier(class_weight={0: 1, 1: 10})
 
 <br>
 
-## 11. Phase 10 : Prévention du Data Leakage {#phase-10}
+## 11. Phase 10 : Prévention du Data Leakage (#phase-10)
 
 ### 11.1 Qu'est-ce que le Data Leakage ?
 
@@ -974,7 +974,7 @@ y_pred = pipeline.predict(X_test)
 
 <br>
 
-## 12. Checklist et Ordre des Opérations {#checklist}
+## 12. Checklist et Ordre des Opérations (#checklist)
 
 ### 12.1 Ordre Optimal des Étapes
 
