@@ -1,4 +1,61 @@
-# Réseaux de Neurones Convolutifs (CNN) - Cours Complet
+# Réseaux de Neurones Convolutifs (CNN)
+
+> **Résumé** : Les CNN exploitent la structure spatiale des images via des convolutions locales et le partage de poids, permettant d'apprendre des hiérarchies de features (bords → formes → objets) avec drastiquement moins de paramètres que les réseaux fully-connected. Architecture fondamentale de la vision par ordinateur depuis 2012.
+
+---
+
+## 📋 Métadonnées
+
+| Attribut | Valeur |
+|----------|---------|
+| **Créé le** | 2024 (date à préciser) |
+| **Dernière mise à jour** | 2026-02-24 |
+| **Domaine** | Deep Learning |
+| **Sous-domaine** | Architectures - Computer Vision |
+| **Niveau** | ⭐⭐ Intermédiaire |
+| **Durée de lecture** | ~60 minutes (cours très complet) |
+| **Fichier** | `cnn.md` |
+| **Emplacement** | `/02_deep_learning/01_architectures/` |
+| **Tags** | `#cnn` `#computer-vision` `#convolution` `#image-classification` `#resnet` `#architecture` |
+
+---
+
+## 🔗 Navigation
+
+### Prérequis
+
+- [x] **[Fonctions d'Activation](../02_fundamentals/fonction_activation.md)** - Obligatoire : comprendre ReLU, Sigmoid, Tanh
+- [x] **[Preprocessing Data](../../01_machine_learning/01_fundamentals/preprocessing_data.md)** - Normalisation des images cruciale
+- [ ] Algèbre linéaire (matrices, produit matriciel)
+- [ ] Calcul différentiel (dérivées, chain rule pour backpropagation)
+- [ ] Python et NumPy (pour implémentation)
+
+### Cours connexes
+
+- **Alternatives modernes** : [Vision Transformers (ViT)](./vit.md) - Architecture sans convolution (2020+)
+- **Application CNN** : [YOLO](./yolo.md) - Détection d'objets en temps réel basée sur CNN
+- **Interprétabilité** : [Integrated Gradients](../04_interpretabilite/integrated_gradients.md) - Expliquer les décisions CNN
+
+### Suite recommandée
+
+- [Vision Transformers](./vit.md) - Comprendre l'alternative moderne
+- [YOLO](./yolo.md) - Application pratique pour détection
+- [Integrated Gradients](../04_interpretabilite/integrated_gradients.md) - Visualiser ce que le CNN apprend
+
+---
+
+## 🎯 Objectifs d'apprentissage
+
+À la fin de ce cours, vous serez capable de :
+
+1. **Comprendre** pourquoi les convolutions sont supérieures aux fully-connected pour les images (localité, partage de poids, hiérarchie)
+2. **Calculer** les dimensions de sortie d'une couche convolutionnelle (avec stride, padding, dilation)
+3. **Analyser** les architectures classiques (LeNet, AlexNet, VGG, ResNet) et leurs innovations respectives
+4. **Implémenter** un CNN complet en PyTorch pour classification d'images
+5. **Diagnostiquer** les problèmes d'entraînement (overfitting, gradient vanishing, dying ReLU)
+6. **Appliquer** le transfer learning pour de nouvelles tâches
+7. **Interpréter** les décisions via Grad-CAM et visualisation de filtres
+
 
 ## 1. Introduction : Pourquoi les CNN ?
 
@@ -346,7 +403,7 @@ $$\mu_{\mathcal{B}} = \frac{1}{m} \sum_{i=1}^{m} x_i$$
 $$\sigma_{\mathcal{B}}^2 = \frac{1}{m} \sum_{i=1}^{m} (x_i - \mu_{\mathcal{B}})^2$$
 
 3. **Normalisation** :
-$$\hat{x}_i = \frac{x_i - \mu_{\mathcal{B}}}{\sqrt{\sigma_{\mathcal{B}}^2 + \epsilon}}$$
+$$\hat{x}_i = \frac{x_i - \mu_{\mathcal{B```{\sqrt{\sigma_{\mathcal{B}}^2 + \epsilon}}$$
 
 4. **Scale & Shift** (paramètres appris) :
 $$y_i = \gamma \hat{x}_i + \beta$$
@@ -797,12 +854,12 @@ CNN = **Boîte noire** → Comprendre ce qui est appris est crucial pour :
 - Symétrie : Si tous les poids identiques, les neurones apprennent la même chose
 
 #### **Xavier / Glorot Initialization**
-$$w \sim \mathcal{N}\left(0, \frac{2}{n_{\text{in}} + n_{\text{out}}}\right)$$
+$$w \sim \mathcal{N}\left(0, \frac{2}{n_{\text{in}} + n_{\text{out```\right)$$
 
 **Pour** : Tanh, Sigmoid
 
 #### **He Initialization**
-$$w \sim \mathcal{N}\left(0, \frac{2}{n_{\text{in}}}\right)$$
+$$w \sim \mathcal{N}\left(0, \frac{2}{n_{\text{in```\right)$$
 
 **Pour** : ReLU
 
@@ -885,7 +942,7 @@ Prédit correctement si la vraie classe est dans les 5 prédictions les plus pro
 - Standard : $\$K \times K \times C_{\text{in}} \times C_{\text{out}}$$
 - Separable : $\$K \times K \times C_{\text{in}} + C_{\text{in}} \times C_{\text{out}}$$
 
-**Ratio** : Environ $$\frac{1}{C_{\text{out}}} + \frac{1}{K^2}$$ (réduction de 8-9x pour $\$K=3$$)
+**Ratio** : Environ $$\frac{1}{C_{\text{out``` + \frac{1}{K^2}$$ (réduction de 8-9x pour $\$K=3$$)
 
 **Usage** : MobileNet, EfficientNet (modèles légers pour mobile)
 
@@ -920,66 +977,6 @@ CNN apprend les **biais du dataset**
 Training de gros modèles = $\$10^{18}$$ à $\$10^{20}$$ FLOPs
 - Jours/semaines sur GPU/TPU
 - Impact environnemental
-
----
-
-## 15. Ressources & Sources
-
-### Papers Fondamentaux
-
-1. **LeNet-5** : LeCun et al. (1998)
-   *"Gradient-Based Learning Applied to Document Recognition"*
-   http://yann.lecun.com/exdb/publis/pdf/lecun-01a.pdf
-
-2. **AlexNet** : Krizhevsky et al. (2012)
-   *"ImageNet Classification with Deep Convolutional Neural Networks"*
-   https://papers.nips.cc/paper/4824-imagenet-classification-with-deep-convolutional-neural-networks.pdf
-
-3. **VGGNet** : Simonyan & Zisserman (2014)
-   *"Very Deep Convolutional Networks for Large-Scale Image Recognition"*
-   https://arxiv.org/abs/1409.1556
-
-4. **GoogLeNet/Inception** : Szegedy et al. (2014)
-   *"Going Deeper with Convolutions"*
-   https://arxiv.org/abs/1409.4842
-
-5. **ResNet** : He et al. (2015)
-   *"Deep Residual Learning for Image Recognition"*
-   https://arxiv.org/abs/1512.03385
-
-6. **Batch Normalization** : Ioffe & Szegedy (2015)
-   *"Batch Normalization: Accelerating Deep Network Training by Reducing Internal Covariate Shift"*
-   https://arxiv.org/abs/1502.03167
-
-7. **Dropout** : Srivastava et al. (2014)
-   *"Dropout: A Simple Way to Prevent Neural Networks from Overfitting"*
-   http://jmlr.org/papers/v15/srivastava14a.html
-
-### Architectures Modernes
-
-8. **EfficientNet** : Tan & Le (2019)
-   *"EfficientNet: Rethinking Model Scaling for Convolutional Neural Networks"*
-   https://arxiv.org/abs/1905.11946
-
-9. **Vision Transformer** : Dosovitskiy et al. (2020)
-   *"An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale"*
-   https://arxiv.org/abs/2010.11929
-
-### Interprétabilité
-
-10. **Grad-CAM** : Selvaraju et al. (2017)
-    *"Grad-CAM: Visual Explanations from Deep Networks via Gradient-based Localization"*
-    https://arxiv.org/abs/1610.02391
-
-### Livres & Cours
-
-- **Deep Learning Book** : Goodfellow, Bengio, Courville (2016)
-  https://www.deeplearningbook.org/
-
-- **CS231n: Convolutional Neural Networks for Visual Recognition** (Stanford)
-  http://cs231n.stanford.edu/
-
----
 
 ## 16. Récapitulatif : Points Clés
 
@@ -1020,5 +1017,572 @@ Training de gros modèles = $\$10^{18}$$ à $\$10^{20}$$ FLOPs
 ✅ **Coût** : Computationnel et environnemental  
 
 ---
+
+## 💻 Implémentation Pratique
+
+### Exemple Complet : CNN pour CIFAR-10 (PyTorch)
+
+```python
+"""
+CNN pour Classification CIFAR-10 (10 classes, images 32×32×3)
+Architecture inspirée de VGG avec adaptations
+"""
+
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+import torchvision
+import torchvision.transforms as transforms
+from torch.utils.data import DataLoader
+import matplotlib.pyplot as plt
+import numpy as np
+
+# ============================================
+# PARTIE 1 : DÉFINITION DE L'ARCHITECTURE
+# ============================================
+
+class SimpleCNN(nn.Module):
+    """
+    CNN simple pour CIFAR-10
+    Architecture : Conv → Conv → Pool → Conv → Conv → Pool → FC → FC
+    """
+    def __init__(self, num_classes=10):
+        super(SimpleCNN, self).__init__()
+        
+        # Bloc 1 : 32×32×3 → 32×32×64 → 16×16×64
+        self.conv1 = nn.Conv2d(3, 64, kernel_size=3, padding=1)  # same padding
+        self.bn1 = nn.BatchNorm2d(64)
+        self.conv2 = nn.Conv2d(64, 64, kernel_size=3, padding=1)
+        self.bn2 = nn.BatchNorm2d(64)
+        self.pool1 = nn.MaxPool2d(2, 2)  # 32×32 → 16×16
+        
+        # Bloc 2 : 16×16×64 → 16×16×128 → 8×8×128
+        self.conv3 = nn.Conv2d(64, 128, kernel_size=3, padding=1)
+        self.bn3 = nn.BatchNorm2d(128)
+        self.conv4 = nn.Conv2d(128, 128, kernel_size=3, padding=1)
+        self.bn4 = nn.BatchNorm2d(128)
+        self.pool2 = nn.MaxPool2d(2, 2)  # 16×16 → 8×8
+        
+        # Bloc 3 : 8×8×128 → 8×8×256 → 4×4×256
+        self.conv5 = nn.Conv2d(128, 256, kernel_size=3, padding=1)
+        self.bn5 = nn.BatchNorm2d(256)
+        self.conv6 = nn.Conv2d(256, 256, kernel_size=3, padding=1)
+        self.bn6 = nn.BatchNorm2d(256)
+        self.pool3 = nn.MaxPool2d(2, 2)  # 8×8 → 4×4
+        
+        # Couches fully-connected
+        self.fc1 = nn.Linear(256 * 4 * 4, 512)
+        self.dropout = nn.Dropout(0.5)
+        self.fc2 = nn.Linear(512, num_classes)
+    
+    def forward(self, x):
+        # Bloc 1
+        x = F.relu(self.bn1(self.conv1(x)))
+        x = F.relu(self.bn2(self.conv2(x)))
+        x = self.pool1(x)
+        
+        # Bloc 2
+        x = F.relu(self.bn3(self.conv3(x)))
+        x = F.relu(self.bn4(self.conv4(x)))
+        x = self.pool2(x)
+        
+        # Bloc 3
+        x = F.relu(self.bn5(self.conv5(x)))
+        x = F.relu(self.bn6(self.conv6(x)))
+        x = self.pool3(x)
+        
+        # Flatten
+        x = x.view(x.size(0), -1)  # (batch, 256*4*4)
+        
+        # FC layers
+        x = F.relu(self.fc1(x))
+        x = self.dropout(x)
+        x = self.fc2(x)
+        
+        return x
+
+
+class ResidualBlock(nn.Module):
+    """
+    Bloc résiduel pour ResNet-like architecture
+    """
+    def __init__(self, in_channels, out_channels, stride=1):
+        super(ResidualBlock, self).__init__()
+        
+        self.conv1 = nn.Conv2d(in_channels, out_channels, kernel_size=3, 
+                               stride=stride, padding=1, bias=False)
+        self.bn1 = nn.BatchNorm2d(out_channels)
+        
+        self.conv2 = nn.Conv2d(out_channels, out_channels, kernel_size=3,
+                               stride=1, padding=1, bias=False)
+        self.bn2 = nn.BatchNorm2d(out_channels)
+        
+        # Shortcut connection (si dimension change)
+        self.shortcut = nn.Sequential()
+        if stride != 1 or in_channels != out_channels:
+            self.shortcut = nn.Sequential(
+                nn.Conv2d(in_channels, out_channels, kernel_size=1, 
+                          stride=stride, bias=False),
+                nn.BatchNorm2d(out_channels)
+            )
+    
+    def forward(self, x):
+        identity = x
+        
+        out = F.relu(self.bn1(self.conv1(x)))
+        out = self.bn2(self.conv2(out))
+        
+        # Skip connection
+        out += self.shortcut(identity)
+        out = F.relu(out)
+        
+        return out
+
+
+class ResNetCIFAR(nn.Module):
+    """
+    ResNet adapté pour CIFAR-10 (images 32×32)
+    """
+    def __init__(self, num_classes=10):
+        super(ResNetCIFAR, self).__init__()
+        
+        self.conv1 = nn.Conv2d(3, 64, kernel_size=3, stride=1, padding=1, bias=False)
+        self.bn1 = nn.BatchNorm2d(64)
+        
+        # Residual blocks
+        self.layer1 = self._make_layer(64, 64, 2, stride=1)
+        self.layer2 = self._make_layer(64, 128, 2, stride=2)
+        self.layer3 = self._make_layer(128, 256, 2, stride=2)
+        
+        self.avg_pool = nn.AdaptiveAvgPool2d((1, 1))
+        self.fc = nn.Linear(256, num_classes)
+    
+    def _make_layer(self, in_channels, out_channels, num_blocks, stride):
+        layers = []
+        layers.append(ResidualBlock(in_channels, out_channels, stride))
+        for _ in range(1, num_blocks):
+            layers.append(ResidualBlock(out_channels, out_channels, stride=1))
+        return nn.Sequential(*layers)
+    
+    def forward(self, x):
+        x = F.relu(self.bn1(self.conv1(x)))
+        
+        x = self.layer1(x)
+        x = self.layer2(x)
+        x = self.layer3(x)
+        
+        x = self.avg_pool(x)
+        x = x.view(x.size(0), -1)
+        x = self.fc(x)
+        
+        return x
+
+
+# ============================================
+# PARTIE 2 : CHARGEMENT DES DONNÉES
+# ============================================
+
+def get_cifar10_loaders(batch_size=128):
+    """
+    Charge CIFAR-10 avec data augmentation pour train
+    """
+    
+    # Normalisation : mean et std de CIFAR-10
+    mean = [0.4914, 0.4822, 0.4465]
+    std = [0.2470, 0.2435, 0.2616]
+    
+    # Transformations pour train (avec augmentation)
+    transform_train = transforms.Compose([
+        transforms.RandomCrop(32, padding=4),
+        transforms.RandomHorizontalFlip(),
+        transforms.ToTensor(),
+        transforms.Normalize(mean, std)
+    ])
+    
+    # Transformations pour test (seulement normalisation)
+    transform_test = transforms.Compose([
+        transforms.ToTensor(),
+        transforms.Normalize(mean, std)
+    ])
+    
+    # Téléchargement et chargement
+    train_dataset = torchvision.datasets.CIFAR10(
+        root='./data', train=True, download=True, transform=transform_train
+    )
+    
+    test_dataset = torchvision.datasets.CIFAR10(
+        root='./data', train=False, download=True, transform=transform_test
+    )
+    
+    train_loader = DataLoader(train_dataset, batch_size=batch_size, 
+                              shuffle=True, num_workers=2)
+    test_loader = DataLoader(test_dataset, batch_size=batch_size, 
+                             shuffle=False, num_workers=2)
+    
+    return train_loader, test_loader
+
+
+# ============================================
+# PARTIE 3 : ENTRAÎNEMENT
+# ============================================
+
+def train_epoch(model, loader, criterion, optimizer, device):
+    """
+    Entraîne le modèle sur une epoch
+    """
+    model.train()
+    running_loss = 0.0
+    correct = 0
+    total = 0
+    
+    for batch_idx, (inputs, targets) in enumerate(loader):
+        inputs, targets = inputs.to(device), targets.to(device)
+        
+        # Forward
+        optimizer.zero_grad()
+        outputs = model(inputs)
+        loss = criterion(outputs, targets)
+        
+        # Backward
+        loss.backward()
+        optimizer.step()
+        
+        # Statistiques
+        running_loss += loss.item()
+        _, predicted = outputs.max(1)
+        total += targets.size(0)
+        correct += predicted.eq(targets).sum().item()
+        
+        if batch_idx % 100 == 0:
+            print(f'  Batch {batch_idx}/{len(loader)} - '
+                  f'Loss: {loss.item():.3f} - '
+                  f'Acc: {100.*correct/total:.2f}%')
+    
+    return running_loss / len(loader), 100. * correct / total
+
+
+def test(model, loader, criterion, device):
+    """
+    Évalue le modèle sur le test set
+    """
+    model.eval()
+    test_loss = 0.0
+    correct = 0
+    total = 0
+    
+    with torch.no_grad():
+        for inputs, targets in loader:
+            inputs, targets = inputs.to(device), targets.to(device)
+            
+            outputs = model(inputs)
+            loss = criterion(outputs, targets)
+            
+            test_loss += loss.item()
+            _, predicted = outputs.max(1)
+            total += targets.size(0)
+            correct += predicted.eq(targets).sum().item()
+    
+    return test_loss / len(loader), 100. * correct / total
+
+
+def train_model(model, train_loader, test_loader, epochs=50, lr=0.001, device='cuda'):
+    """
+    Boucle d'entraînement complète
+    """
+    criterion = nn.CrossEntropyLoss()
+    optimizer = torch.optim.Adam(model.parameters(), lr=lr, weight_decay=5e-4)
+    
+    # Learning rate scheduler
+    scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=epochs)
+    
+    history = {
+        'train_loss': [], 'train_acc': [],
+        'test_loss': [], 'test_acc': []
+    }
+    
+    best_acc = 0.0
+    
+    for epoch in range(epochs):
+        print(f'\nEpoch {epoch+1}/{epochs}')
+        print('-' * 50)
+        
+        # Train
+        train_loss, train_acc = train_epoch(model, train_loader, criterion, optimizer, device)
+        
+        # Test
+        test_loss, test_acc = test(model, test_loader, criterion, device)
+        
+        # Scheduler step
+        scheduler.step()
+        
+        # Sauvegarder historique
+        history['train_loss'].append(train_loss)
+        history['train_acc'].append(train_acc)
+        history['test_loss'].append(test_loss)
+        history['test_acc'].append(test_acc)
+        
+        print(f'Train Loss: {train_loss:.4f} - Train Acc: {train_acc:.2f}%')
+        print(f'Test Loss: {test_loss:.4f} - Test Acc: {test_acc:.2f}%')
+        
+        # Sauvegarder meilleur modèle
+        if test_acc > best_acc:
+            best_acc = test_acc
+            torch.save(model.state_dict(), 'best_model.pth')
+            print(f'✓ Nouveau meilleur modèle sauvegardé (acc: {best_acc:.2f}%)')
+    
+    return history
+
+
+# ============================================
+# PARTIE 4 : VISUALISATION
+# ============================================
+
+def plot_training_history(history):
+    """
+    Visualise les courbes d'entraînement
+    """
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 4))
+    
+    # Loss
+    ax1.plot(history['train_loss'], label='Train Loss')
+    ax1.plot(history['test_loss'], label='Test Loss')
+    ax1.set_xlabel('Epoch')
+    ax1.set_ylabel('Loss')
+    ax1.set_title('Loss au cours de l\'entraînement')
+    ax1.legend()
+    ax1.grid(True, alpha=0.3)
+    
+    # Accuracy
+    ax2.plot(history['train_acc'], label='Train Accuracy')
+    ax2.plot(history['test_acc'], label='Test Accuracy')
+    ax2.set_xlabel('Epoch')
+    ax2.set_ylabel('Accuracy (%)')
+    ax2.set_title('Accuracy au cours de l\'entraînement')
+    ax2.legend()
+    ax2.grid(True, alpha=0.3)
+    
+    plt.tight_layout()
+    plt.savefig('training_history.png', dpi=150)
+    plt.show()
+
+
+def visualize_filters(model, layer_name='conv1'):
+    """
+    Visualise les filtres de la première couche convolutionnelle
+    """
+    # Extraire les poids
+    if hasattr(model, layer_name):
+        weights = getattr(model, layer_name).weight.data.cpu()
+    else:
+        print(f"Couche {layer_name} non trouvée")
+        return
+    
+    # Normaliser pour affichage
+    weights = weights - weights.min()
+    weights = weights / weights.max()
+    
+    num_filters = min(64, weights.shape[0])
+    fig, axes = plt.subplots(8, 8, figsize=(12, 12))
+    
+    for i, ax in enumerate(axes.flat):
+        if i < num_filters:
+            # Afficher le filtre (moyenner les canaux RGB si 3 canaux)
+            if weights.shape[1] == 3:
+                img = weights[i].permute(1, 2, 0).numpy()
+            else:
+                img = weights[i, 0].numpy()
+            
+            ax.imshow(img, cmap='viridis')
+            ax.axis('off')
+        else:
+            ax.axis('off')
+    
+    plt.suptitle(f'Filtres de la couche {layer_name}', fontsize=16)
+    plt.tight_layout()
+    plt.savefig('conv_filters.png', dpi=150)
+    plt.show()
+
+
+# ============================================
+# PARTIE 5 : UTILISATION
+# ============================================
+
+if __name__ == "__main__":
+    # Configuration
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    print(f'Utilisation de : {device}')
+    
+    # Chargement données
+    train_loader, test_loader = get_cifar10_loaders(batch_size=128)
+    
+    # Choix du modèle
+    # model = SimpleCNN(num_classes=10).to(device)
+    model = ResNetCIFAR(num_classes=10).to(device)
+    
+    # Afficher architecture
+    print(f'\nNombre de paramètres : {sum(p.numel() for p in model.parameters()):,}')
+    
+    # Entraînement
+    history = train_model(
+        model, train_loader, test_loader,
+        epochs=50, lr=0.001, device=device
+    )
+    
+    # Visualisations
+    plot_training_history(history)
+    visualize_filters(model, layer_name='conv1')
+    
+    print(f'\n✓ Entraînement terminé !')
+    print(f'Meilleure test accuracy : {max(history["test_acc"]):.2f}%')
+```
+
+---
+
+## ⚖️ Comparaisons : CNN vs Alternatives
+
+### CNN vs Vision Transformers (ViT)
+
+| Critère | CNN | Vision Transformers | Gagnant |
+|---------|-----|---------------------|---------|
+| **Performance (small data < 10k)** | ⭐⭐⭐⭐⭐ Excellent | ⭐⭐ Faible (besoin de prétraining) | **CNN** |
+| **Performance (large data > 1M)** | ⭐⭐⭐⭐ Très bon | ⭐⭐⭐⭐⭐ État de l'art | **ViT** |
+| **Inductive bias (localité)** | Fort (bénéfique small data) | Faible (apprend from scratch) | **CNN** (small data) |
+| **Champ récepteur global** | Nécessite profondeur | Dès la 1ère couche (attention) | **ViT** |
+| **Vitesse d'inférence** | ⭐⭐⭐⭐ Rapide | ⭐⭐⭐ Plus lent (attention coûteuse) | **CNN** |
+| **Taille modèle** | Compact (ResNet-50: 25M params) | Large (ViT-B: 86M params) | **CNN** |
+| **Interprétabilité** | ⭐⭐⭐ Filtres visualisables | ⭐⭐⭐⭐ Attention maps claires | **ViT** |
+
+**Quand utiliser CNN** :
+- ✅ Dataset < 100k images
+- ✅ Contraintes latence/mémoire (edge deployment)
+- ✅ Tâches classiques bien résolues (classification, détection)
+- ✅ Besoin de compréhension des features (filtres)
+
+**Quand utiliser ViT** :
+- ✅ Dataset > 1M images ou access à modèle prétrainé
+- ✅ Tâche complexe nécessitant contexte global
+- ✅ Ressources GPU abondantes
+- ✅ État de l'art recherche
+
+**Tendance actuelle (2024-2026)** : **Hybrid models** (ConvNeXt, CoAtNet)
+- Combinent meilleur des deux mondes
+- Conv pour features locales + Attention pour contexte global
+
+📖 **Voir aussi** : [Vision Transformers (ViT)](./vit.md)
+
+---
+
+### CNN vs Fully-Connected Networks
+
+| Aspect | Fully-Connected | CNN | Avantage CNN |
+|--------|----------------|-----|--------------|
+| **Params (image 224×224×3, 1000 neurones)** | 150M | ~2k (conv 3×3) | **75,000×** moins |
+| **Invariance translation** | ❌ Non | ✅ Oui (partage poids) | **CNN** |
+| **Structure spatiale** | ❌ Perdue (flatten) | ✅ Préservée | **CNN** |
+| **Hiérarchie features** | ❌ Manuelle | ✅ Automatique | **CNN** |
+| **Overfitting** | ⚠️ Très sensible | ✅ Régularisé (partage) | **CNN** |
+
+**Conclusion** : CNN systématiquement supérieur pour données spatiales (images, vidéos)
+
+---
+
+## 💡 Points Clés à Retenir
+
+- 🔑 **Convolutions exploitent 3 principes** : Localité spatiale, partage de poids, hiérarchie de features
+- 🔑 **Réduction paramétrique drastique** : Kernel 3×3 = 9 params vs millions pour FC
+- 🔑 **Formule dimension output** : $$\text{output} = \lfloor \frac{n + 2p - k}{s} \rfloor + 1$$
+- 🔑 **Batch Normalization = Standard** : Après Conv, avant ReLU → Stabilise et accélère
+- 🔑 **ResNet révolution (2015)** : Skip connections permettent réseaux profonds (> 100 couches)
+- 🔑 **Transfer Learning = Pratique standard** : Prétraining ImageNet puis fine-tuning
+- 🔑 **Data Augmentation cruciale** : Random crops, flips → Évite overfitting
+- 🔑 **Adam optimizer** : Fonctionne bien "out of the box" pour la plupart des cas
+- 🔑 **Global Average Pooling** : Remplace FC en sortie → Moins de params, moins d'overfit
+- 🔑 **Architectures modernes** : ResNet-50/EfficientNet = compromis performance/coût optimal
+
+---
+
+## ⚠️ Pièges à Éviter
+
+| ❌ Erreur courante | ✅ Bonne pratique | 💡 Pourquoi |
+|-------------------|-------------------|-------------|
+| Oublier de normaliser les images | Normaliser avec mean/std du dataset | CNN très sensible à l'échelle des pixels |
+| Utiliser uniquement convolutions 5×5 ou plus | Empiler des 3×3 | Même champ récepteur, moins de params, plus de non-linéarités |
+| Padding=0 systématiquement | Padding='same' pour préserver dimension | Évite shrinkage, préserve info de bord |
+| Batch Norm après activation | Conv → BatchNorm → ReLU | Normaliser avant non-linéarité (standard actuel) |
+| Learning rate trop élevé au début | Warmup (augmentation progressive) | BatchNorm instable initialement |
+| Fine-tuning avec même LR que training | LR 10-100× plus faible | Évite de "casser" les features pré-apprises |
+| Ignorer data augmentation | Toujours augmenter (sauf test set) | Réduit drastiquement overfitting |
+| Sauvegarder seulement le dernier modèle | Sauvegarder best validation accuracy | Évite overfit des derniers epochs |
+| Dropout sur couches conv | Dropout seulement sur FC | Conv déjà régularisées (partage poids) |
+| Oublier model.eval() en inférence | Toujours model.eval() avant test | BatchNorm/Dropout comportent différemment |
+
+---
+
+## 📚 Ressources Complémentaires
+
+### Papers Fondamentaux
+
+1. **"Gradient-Based Learning Applied to Document Recognition"** - LeCun et al. (1998)
+   - [PDF](http://yann.lecun.com/exdb/publis/pdf/lecun-01a.pdf)
+   - 📌 **LeNet-5** : Première CNN moderne, reconnaissance MNIST
+   
+2. **"ImageNet Classification with Deep Convolutional Neural Networks"** - Krizhevsky et al. (2012)
+   - [PDF](https://papers.nips.cc/paper/2012/file/c399862d3b9d6b76c8436e924a68c45b-Paper.pdf)
+   - 📌 **AlexNet** : Déclenche la révolution deep learning (ImageNet 2012)
+   
+3. **"Very Deep Convolutional Networks for Large-Scale Image Recognition"** - Simonyan & Zisserman (2014)
+   - [arXiv](https://arxiv.org/abs/1409.1556)
+   - 📌 **VGGNet** : Prouve l'efficacité des convolutions 3×3 empilées
+   
+4. **"Deep Residual Learning for Image Recognition"** - He et al. (2015)
+   - [arXiv](https://arxiv.org/abs/1512.03385)
+   - 📌 **ResNet** : Skip connections → Réseaux ultra-profonds possibles
+   - 🏆 **Impact majeur** : Architecture la plus influente post-2015
+
+5. **"EfficientNet: Rethinking Model Scaling for Convolutional Neural Networks"** - Tan & Le (2019)
+   - [arXiv](https://arxiv.org/abs/1905.11946)
+   - 📌 **EfficientNet** : Optimisation simultanée profondeur/largeur/résolution
+
+### Tutorials & Documentation
+
+- **[CS231n: Convolutional Neural Networks for Visual Recognition](http://cs231n.stanford.edu/)** - Cours Stanford (référence)
+- **[PyTorch CNN Tutorial](https://pytorch.org/tutorials/beginner/blitz/cifar10_tutorial.html)** - Official tutorial
+- **[Distill.pub: Feature Visualization](https://distill.pub/2017/feature-visualization/)** - Visualisations interactives
+
+### Outils & Frameworks
+
+- **[PyTorch](https://pytorch.org/)** - Framework de référence recherche
+- **[TorchVision](https://pytorch.org/vision/stable/index.html)** - Modèles pré-entraînés (ResNet, VGG, etc.)
+- **[Timm (PyTorch Image Models)](https://github.com/rwightman/pytorch-image-models)** - 700+ architectures pré-entraînées
+- **[Netron](https://netron.app/)** - Visualiser architectures CNN
+
+### Datasets
+
+- **[ImageNet](https://image-net.org/)** - 1.4M images, 1000 classes (standard prétraining)
+- **[CIFAR-10/100](https://www.cs.toronto.edu/~kriz/cifar.html)** - 60k images 32×32 (benchmark rapide)
+- **[COCO](https://cocodataset.org/)** - Détection d'objets, segmentation
+
+---
+
+## 🔙 Navigation
+
+**Retour** : [INDEX Deep Learning](../INDEX.md) | [README Principal](../../README.md)
+
+**Cours connexes dans ce domaine** :
+- [Fonctions d'Activation](../02_fundamentals/fonction_activation.md) - Prérequis fondamental
+- [Vision Transformers](./vit.md) - Alternative moderne sans convolutions
+- [YOLO](./yolo.md) - Application CNN pour détection temps réel
+
+**Progression recommandée** :
+1. ✅ Fonctions d'Activation (prérequis)
+2. ✅ CNN (ce cours)
+3. → [YOLO](./yolo.md) - Application pratique
+4. → [Vision Transformers](./vit.md) - Comprendre l'évolution post-CNN
+5. → [Integrated Gradients](../04_interpretabilite/integrated_gradients.md) - Interpréter les CNN
+
+---
+
+*Dernière mise à jour : 2026-02-24*
+*Cours complet sur les CNN : Des fondamentaux mathématiques aux architectures modernes*
 
 **Fin du cours** - Tu as maintenant une compréhension complète des CNN, de leurs fondations mathématiques aux applications pratiques ! 🚀
