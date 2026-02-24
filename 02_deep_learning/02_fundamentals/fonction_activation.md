@@ -1,81 +1,73 @@
 # Fonctions d'Activation dans les Réseaux de Neurones
 
-## Table des Matières
+> **Résumé** : Les fonctions d'activation introduisent la non-linéarité essentielle dans les réseaux de neurones, permettant l'apprentissage de patterns complexes. Ce cours couvre les fonctions classiques (Sigmoid, ReLU), modernes (GELU, Swish) et leur sélection selon le contexte.
 
-### [1. Introduction Fondamentale : Pourquoi les Fonctions d'Activation ?](#1-introduction-fondamentale--pourquoi-les-fonctions-dactivation-)
-- [1.1 Le Problème de la Linéarité](#11-le-problème-de-la-linéarité)
-- [1.2 L'Apport de la Non-Linéarité](#12-lapport-de-la-non-linéarité)
-- [1.3 Rôle dans la Rétropropagation](#13-rôle-dans-la-rétropropagation)
-- [1.4 Exemple Concret : Classification XOR](#14-exemple-concret--classification-xor)
-- [1.5 Critères Essentiels pour une Bonne Fonction d'Activation](#15-critères-essentiels-pour-une-bonne-fonction-dactivation)
-- [1.6 Vue d'Ensemble Historique](#16-vue-densemble-historique)
+---
 
-### [2. Propriétés Mathématiques Essentielles](#2-propriétés-mathématiques-essentielles)
-- [2.1 Continuité et Différentiabilité](#21-continuité-et-différentiabilité)
-- [2.2 Saturation et Gradient Vanishing](#22-saturation-et-gradient-vanishing)
-- [2.3 Range (Intervalle de Sortie)](#23-range-intervalle-de-sortie)
-- [2.4 Monotonie](#24-monotonie)
-- [2.5 Symétrie et Centrage](#25-symétrie-et-centrage)
-- [2.6 Comportement Asymptotique](#26-comportement-asymptotique)
-- [2.7 Propriétés Liées au Gradient Flow](#27-propriétés-liées-au-gradient-flow)
-- [2.8 Coût Computationnel](#28-coût-computationnel)
-- [2.9 Résumé des Propriétés Clés](#29-résumé-des-propriétés-clés)
+## 📋 Métadonnées
 
-### [3. Fonctions d'Activation Classiques](#3-fonctions-dactivation-classiques)
-- [3.1 Sigmoid (Logistique)](#31-sigmoid-logistique)
-- [3.2 Tangente Hyperbolique (Tanh)](#32-tangente-hyperbolique-tanh)
-- [3.3 ReLU (Rectified Linear Unit)](#33-relu-rectified-linear-unit)
-- [3.4 Comparaison Récapitulative des Fonctions Classiques](#34-comparaison-récapitulative-des-fonctions-classiques)
+| Attribut | Valeur |
+|----------|---------|
+| **Créé le** | 2024 (date à préciser) |
+| **Dernière mise à jour** | 2026-02-24 |
+| **Domaine** | Deep Learning |
+| **Sous-domaine** | Fundamentals |
+| **Niveau** | ⭐ Débutant à ⭐⭐ Intermédiaire |
+| **Durée de lecture** | ~45 minutes (cours complet et approfondi) |
+| **Fichier** | `fonction_activation.md` |
+| **Emplacement** | `/02_deep_learning/02_fundamentals/` |
+| **Tags** | `#activation-functions` `#relu` `#sigmoid` `#gelu` `#neural-networks` `#non-linearity` `#gradient-flow` |
 
-### [4. Variantes de ReLU : Résoudre le Problème des Neurones Morts](#4-variantes-de-relu--résoudre-le-problème-des-neurones-morts)
-- [4.1 Leaky ReLU](#41-leaky-relu)
-- [4.2 PReLU (Parametric ReLU)](#42-prelu-parametric-relu)
-- [4.3 ELU (Exponential Linear Unit)](#43-elu-exponential-linear-unit)
-- [4.4 SELU (Scaled Exponential Linear Unit)](#44-selu-scaled-exponential-linear-unit)
-- [4.5 Comparaison Récapitulative des Variantes de ReLU](#45-comparaison-récapitulative-des-variantes-de-relu)
+---
 
-### [5. Fonctions Lisses Modernes : GELU, Swish/SiLU, Mish](#5-fonctions-lisses-modernes--gelu-swishsilu-mish)
-- [5.1 Contexte et Motivation](#51-contexte-et-motivation)
-- [5.2 GELU (Gaussian Error Linear Unit)](#52-gelu-gaussian-error-linear-unit)
-- [5.3 Swish / SiLU (Sigmoid Linear Unit)](#53-swish--silu-sigmoid-linear-unit)
-- [5.4 Mish](#54-mish)
-- [5.5 Comparaison des Fonctions Lisses Modernes](#55-comparaison-des-fonctions-lisses-modernes)
-- [5.6 Leçons et Tendances](#56-leçons-et-tendances)
-- [5.7 Résumé : Quand Utiliser Quelle Fonction Lisse ?](#57-résumé--quand-utiliser-quelle-fonction-lisse-)
+## 🔗 Navigation
 
-### [6. Fonctions d'Activation Spécialisées](#6-fonctions-dactivation-spécialisées)
-- [6.1 Softmax (Couche de Sortie Multi-Classes)](#61-softmax-couche-de-sortie-multi-classes)
-- [6.2 GLU (Gated Linear Unit) et Variantes](#62-glu-gated-linear-unit-et-variantes)
-- [6.3 Softplus](#63-softplus)
-- [6.4 Maxout](#64-maxout)
-- [6.5 Résumé des Fonctions Spécialisées](#65-résumé-des-fonctions-spécialisées)
+### Prérequis
 
-### [7. Analyse Comparative et Guide de Décision](#7-analyse-comparative-et-guide-de-décision)
-- [7.1 Vue d'Ensemble Comparative](#71-vue-densemble-comparative)
-- [7.2 Arbre de Décision Détaillé](#72-arbre-de-décision-détaillé)
-- [7.3 Par Contrainte et Objectif](#73-par-contrainte-et-objectif)
-- [7.4 Problèmes Courants et Solutions](#74-problèmes-courants-et-solutions)
-- [7.5 Checklist Complète de Sélection](#75-checklist-complète-de-sélection)
-- [7.6 Erreurs Courantes à Éviter](#76-erreurs-courantes-à-éviter)
-- [7.7 Recommandations Finales par Niveau](#77-recommandations-finales-par-niveau)
-- [7.8 Résumé : Les 3 Règles d'Or](#78-résumé--les-3-règles-dor)
+- [ ] Connaissances de base en algèbre linéaire (vecteurs, matrices)
+- [ ] Notions de dérivées et calcul différentiel
+- [ ] Compréhension du concept de réseau de neurones (optionnel mais recommandé)
 
-### [8. Fonctions Récentes et Expérimentales (2020+)](#8-fonctions-récentes-et-expérimentales-2020)
-- [8.1 Contexte et Tendances](#81-contexte-et-tendances)
-- [8.2 Fonctions Émergentes (Sélection)](#82-fonctions-émergentes-sélection)
-- [8.3 Directions de Recherche](#83-directions-de-recherche)
-- [8.4 Pourquoi Peu d'Innovation ?](#84-pourquoi-peu-dinnovation-)
-- [8.5 Conclusion](#85-conclusion)
+### Cours connexes
 
-### [9. Synthèse Finale et Recommandations Pratiques](#9-synthèse-finale-et-recommandations-pratiques)
-- [9.1 Évolution Historique : Les Grandes Phases](#91-évolution-historique--les-grandes-phases)
-- [9.2 Les 5 Activations Essentielles à Connaître](#92-les-5-activations-essentielles-à-connaître)
-- [9.3 Recettes Pratiques par Scénario](#93-recettes-pratiques-par-scénario)
-- [9.4 Debugging : Diagnostiquer les Problèmes d'Activation](#94-debugging--diagnostiquer-les-problèmes-dactivation)
-- [9.5 Mythes et Réalités](#95-mythes-et-réalités)
-- [9.6 Conseils pour Votre "Second Cerveau"](#96-conseils-pour-votre-second-cerveau)
-- [9.7 Le Mot de la Fin](#97-le-mot-de-la-fin)
-- [9.8 Checklist Finale : Avez-vous Bien Choisi ?](#98-checklist-finale--avez-vous-bien-choisi-)
+- **Fondamentaux Machine Learning** : [Preprocessing Data](../../01_machine_learning/01_fundamentals/preprocessing_data.md) - Normalisation importante avant activation
+- **Architectures** : [CNN](../01_architectures/cnn.md) - Application pratique des fonctions d'activation
+- **Architectures** : [Vision Transformers](../01_architectures/vit.md) - Utilise GELU comme activation standard
+- **LLM** : [RAG](../03_llm/rag.md) - Transformers utilisent GELU/Swish
+- **LLM** : [RLHF](../03_llm/apprentissage_renforcement_llm.md) - Fonctions d'activation dans les réseaux de politique
+
+### Suite recommandée
+
+- [CNN](../01_architectures/cnn.md) - Appliquer les activations en vision
+- [YOLO](../01_architectures/yolo.md) - Voir ReLU/Leaky ReLU en pratique
+- [Integrated Gradients](../04_interpretabilite/integrated_gradients.md) - Comprendre l'impact des activations sur l'interprétabilité
+
+---
+
+## 🎯 Objectifs d'apprentissage
+
+À la fin de ce cours, vous serez capable de :
+
+1. **Comprendre** pourquoi la non-linéarité est essentielle dans les réseaux de neurones
+2. **Comparer** les propriétés mathématiques des différentes fonctions (saturation, gradient flow, coût computationnel)
+3. **Analyser** l'impact du choix d'activation sur la convergence et les performances
+4. **Sélectionner** la fonction d'activation appropriée selon le contexte (architecture, domaine, contraintes)
+5. **Diagnostiquer** les problèmes liés aux activations (gradient vanishing, neurones morts)
+6. **Implémenter** et tester différentes fonctions d'activation en PyTorch
+
+---
+
+## 📚 Table des Matières Détaillée
+
+1. [Introduction Fondamentale : Pourquoi les Fonctions d'Activation ?](#1-introduction-fondamentale--pourquoi-les-fonctions-dactivation)
+2. [Propriétés Mathématiques Essentielles](#2-propriétés-mathématiques-essentielles)
+3. [Fonctions d'Activation Classiques](#3-fonctions-dactivation-classiques)
+4. [Variantes de ReLU](#4-variantes-de-relu--résoudre-le-problème-des-neurones-morts)
+5. [Fonctions Lisses Modernes](#5-fonctions-lisses-modernes--gelu-swishsilu-mish)
+6. [Fonctions Spécialisées](#6-fonctions-dactivation-spécialisées)
+7. [Guide de Décision](#7-analyse-comparative-et-guide-de-décision)
+8. [Fonctions Récentes (2020+)](#8-fonctions-récentes-et-expérimentales-2020)
+9. [Synthèse Finale](#9-synthèse-finale-et-recommandations-pratiques)
 
 ---
 
@@ -3500,3 +3492,321 @@ Avant de finaliser votre choix d'activation, répondez à ces questions :
 **Bon apprentissage !** Les fonctions d'activation sont un domaine fascinant où simplicité et élégance mathématique se rencontrent. Ce cours vous donne les bases pour comprendre profondément et choisir intelligemment. La pratique et l'expérimentation feront le reste. 🚀
 
 [↑ Retour à la table des matières](#table-des-matières)
+
+## 💻 Implémentation Pratique
+
+### Tester Différentes Activations en PyTorch
+
+```python
+import torch
+import torch.nn as nn
+import matplotlib.pyplot as plt
+import numpy as np
+
+# Définition d'un réseau simple pour tester les activations
+class SimpleNet(nn.Module):
+    def __init__(self, activation='relu'):
+        super(SimpleNet, self).__init__()
+        self.fc1 = nn.Linear(784, 256)
+        self.fc2 = nn.Linear(256, 128)
+        self.fc3 = nn.Linear(128, 10)
+        
+        # Sélection de la fonction d'activation
+        if activation == 'relu':
+            self.activation = nn.ReLU()
+        elif activation == 'leaky_relu':
+            self.activation = nn.LeakyReLU(0.01)
+        elif activation == 'gelu':
+            self.activation = nn.GELU()
+        elif activation == 'silu':  # Swish
+            self.activation = nn.SiLU()
+        elif activation == 'tanh':
+            self.activation = nn.Tanh()
+        elif activation == 'sigmoid':
+            self.activation = nn.Sigmoid()
+        else:
+            raise ValueError(f"Activation {activation} non supportée")
+    
+    def forward(self, x):
+        x = x.view(-1, 784)  # Flatten
+        x = self.activation(self.fc1(x))
+        x = self.activation(self.fc2(x))
+        x = self.fc3(x)  # Pas d'activation en sortie (sera dans la loss)
+        return x
+
+# Visualisation des fonctions d'activation
+def plot_activations():
+    """
+    Visualise les courbes de différentes fonctions d'activation
+    """
+    x = torch.linspace(-5, 5, 200)
+    
+    activations = {
+        'ReLU': nn.ReLU(),
+        'Leaky ReLU': nn.LeakyReLU(0.01),
+        'GELU': nn.GELU(),
+        'Swish/SiLU': nn.SiLU(),
+        'Tanh': nn.Tanh(),
+        'Sigmoid': nn.Sigmoid()
+    }
+    
+    fig, axes = plt.subplots(2, 3, figsize=(15, 10))
+    axes = axes.flatten()
+    
+    for idx, (name, activation) in enumerate(activations.items()):
+        y = activation(x)
+        axes[idx].plot(x.numpy(), y.numpy(), linewidth=2)
+        axes[idx].grid(True, alpha=0.3)
+        axes[idx].axhline(y=0, color='k', linewidth=0.5)
+        axes[idx].axvline(x=0, color='k', linewidth=0.5)
+        axes[idx].set_title(name, fontsize=14, fontweight='bold')
+        axes[idx].set_xlabel('x')
+        axes[idx].set_ylabel('f(x)')
+    
+    plt.tight_layout()
+    plt.savefig('activation_functions.png', dpi=150)
+    plt.show()
+
+# Comparaison empirique sur MNIST
+def compare_activations_mnist():
+    """
+    Compare les performances de différentes activations sur MNIST
+    """
+    from torchvision import datasets, transforms
+    from torch.utils.data import DataLoader
+    
+    # Chargement MNIST
+    transform = transforms.Compose([
+        transforms.ToTensor(),
+        transforms.Normalize((0.1307,), (0.3081,))
+    ])
+    
+    train_dataset = datasets.MNIST('./data', train=True, download=True, transform=transform)
+    train_loader = DataLoader(train_dataset, batch_size=128, shuffle=True)
+    
+    activations_to_test = ['relu', 'leaky_relu', 'gelu', 'silu', 'tanh']
+    results = {}
+    
+    for activation_name in activations_to_test:
+        print(f"\n{'='*50}")
+        print(f"Test avec {activation_name.upper()}")
+        print(f"{'='*50}")
+        
+        model = SimpleNet(activation=activation_name)
+        optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
+        criterion = nn.CrossEntropyLoss()
+        
+        # Entraînement sur 1 epoch (pour démo rapide)
+        model.train()
+        total_loss = 0
+        correct = 0
+        total = 0
+        
+        for batch_idx, (data, target) in enumerate(train_loader):
+            optimizer.zero_grad()
+            output = model(data)
+            loss = criterion(output, target)
+            loss.backward()
+            optimizer.step()
+            
+            total_loss += loss.item()
+            _, predicted = output.max(1)
+            total += target.size(0)
+            correct += predicted.eq(target).sum().item()
+            
+            if batch_idx % 100 == 0:
+                print(f"Batch {batch_idx}/{len(train_loader)} - "
+                      f"Loss: {loss.item():.4f} - "
+                      f"Acc: {100.*correct/total:.2f}%")
+        
+        avg_loss = total_loss / len(train_loader)
+        accuracy = 100. * correct / total
+        
+        results[activation_name] = {
+            'loss': avg_loss,
+            'accuracy': accuracy
+        }
+        
+        print(f"\n{activation_name.upper()} - Loss finale: {avg_loss:.4f}, Accuracy: {accuracy:.2f}%")
+    
+    # Affichage comparatif
+    print(f"\n{'='*60}")
+    print("RÉSUMÉ COMPARATIF")
+    print(f"{'='*60}")
+    print(f"{'Activation':<15} {'Loss':<10} {'Accuracy'}")
+    print(f"{'-'*60}")
+    for name, metrics in sorted(results.items(), key=lambda x: x[1]['accuracy'], reverse=True):
+        print(f"{name:<15} {metrics['loss']:<10.4f} {metrics['accuracy']:.2f}%")
+
+# Diagnostic : Détecter les neurones morts (ReLU)
+def detect_dead_neurons(model, data_loader, layer_name='fc1'):
+    """
+    Détecte les neurones qui ne s'activent jamais (sortie toujours 0)
+    Spécifique à ReLU et ses variantes
+    """
+    model.eval()
+    activations_sum = None
+    total_samples = 0
+    
+    def hook_fn(module, input, output):
+        nonlocal activations_sum, total_samples
+        batch_size = output.size(0)
+        total_samples += batch_size
+        
+        # Compter les activations > 0
+        active = (output > 0).float().sum(dim=0)
+        
+        if activations_sum is None:
+            activations_sum = active
+        else:
+            activations_sum += active
+    
+    # Enregistrer le hook sur la couche spécifiée
+    layer = getattr(model, layer_name)
+    handle = layer.register_forward_hook(hook_fn)
+    
+    # Passage sur le dataset
+    with torch.no_grad():
+        for data, _ in data_loader:
+            _ = model(data)
+    
+    handle.remove()
+    
+    # Calculer le pourcentage d'activation par neurone
+    activation_rate = (activations_sum / total_samples).numpy()
+    dead_neurons = (activation_rate == 0).sum()
+    total_neurons = len(activation_rate)
+    
+    print(f"\nAnalyse couche '{layer_name}':")
+    print(f"  Neurones totaux: {total_neurons}")
+    print(f"  Neurones morts (0% activation): {dead_neurons} ({100*dead_neurons/total_neurons:.1f}%)")
+    print(f"  Taux d'activation moyen: {activation_rate.mean()*100:.2f}%")
+    
+    # Visualisation
+    plt.figure(figsize=(12, 4))
+    plt.bar(range(total_neurons), activation_rate * 100)
+    plt.axhline(y=0, color='r', linestyle='--', label='Neurones morts')
+    plt.xlabel('Indice du neurone')
+    plt.ylabel('Taux d\'activation (%)')
+    plt.title(f'Taux d\'activation des neurones - Couche {layer_name}')
+    plt.legend()
+    plt.tight_layout()
+    plt.savefig(f'dead_neurons_{layer_name}.png', dpi=150)
+    plt.show()
+
+# UTILISATION
+if __name__ == "__main__":
+    # 1. Visualiser les fonctions
+    plot_activations()
+    
+    # 2. Comparer sur MNIST (attention: peut prendre plusieurs minutes)
+    # compare_activations_mnist()  # Décommenter pour exécuter
+    
+    # 3. Détecter les neurones morts
+    # model = SimpleNet(activation='relu')
+    # # Charger train_loader (voir fonction précédente)
+    # detect_dead_neurons(model, train_loader, layer_name='fc1')
+```
+
+---
+
+## ⚖️ Comparaison : Quand Utiliser Quelle Activation ?
+
+| Contexte | Activation Recommandée | Raison | Alternative |
+|----------|------------------------|--------|-------------|
+| **Vision (CNN)** | ReLU ou Leaky ReLU | Standard, rapide, éprouvé | GELU (si Transformers) |
+| **NLP (Transformers)** | GELU | État de l'art (BERT, GPT) | Swish/SiLU |
+| **RNN/LSTM** | Tanh | Centré sur 0, range borné | Sigmoid (gates uniquement) |
+| **Réseaux très profonds (>50 couches)** | PReLU ou SELU | Auto-normalisation, meilleur gradient flow | ReLU + Batch Norm |
+| **Petits réseaux (<5 couches)** | ReLU | Simplicité suffisante | N'importe quelle variante |
+| **Production (latence critique)** | ReLU ou Leaky ReLU | Très rapide à calculer | Éviter GELU/Swish |
+| **Couche de sortie (classification binaire)** | Sigmoid | Interprétation probabiliste | N/A |
+| **Couche de sortie (multi-classes)** | Softmax | Somme = 1 (probabilités) | N/A |
+| **Couche de sortie (régression)** | Linéaire (identité) | Pas de contrainte sur la sortie | ReLU si sortie ≥ 0 |
+| **Problème de gradient vanishing** | ReLU, Leaky ReLU, GELU | Pas de saturation | PReLU, SELU |
+| **Problème de neurones morts** | Leaky ReLU, PReLU, ELU | Gradient non-nul pour x < 0 | SELU |
+
+---
+
+## 💡 Points Clés à Retenir
+
+- 🔑 **Non-linéarité essentielle** : Sans activation non-linéaire, un réseau profond = perceptron simple
+- 🔑 **ReLU = Baseline** : Point de départ par défaut (simple, efficace, rapide)
+- 🔑 **GELU pour Transformers** : Standard dans BERT, GPT et modèles modernes NLP
+- 🔑 **Gradient vanishing** : Sigmoid/Tanh saturent → éviter pour réseaux profonds
+- 🔑 **Neurones morts (ReLU)** : Solution → Leaky ReLU ou PReLU
+- 🔑 **Centrage sur 0** : Tanh > Sigmoid (optimisation plus efficace)
+- 🔑 **Trade-off coût/performance** : ReLU rapide vs GELU plus lisse mais coûteux
+- 🔑 **Batch Normalization** : Réduit l'importance du choix d'activation (normalise les distributions)
+
+---
+
+## ⚠️ Pièges à Éviter
+
+| ❌ Erreur courante | ✅ Bonne pratique | 💡 Pourquoi |
+|-------------------|-------------------|-------------|
+| Utiliser Sigmoid en couches cachées | ReLU ou GELU | Gradient vanishing dans réseaux profonds |
+| ReLU sans Batch Norm sur réseaux très profonds | ReLU + Batch Norm ou PReLU/SELU | Évite les neurones morts et stabilise |
+| Oublier d'adapter le learning rate selon l'activation | Tester différents LR selon activation | SELU nécessite LR plus faible que ReLU |
+| Utiliser la même activation partout | Adapter : GELU (Transformers), ReLU (CNN) | Chaque architecture a des besoins spécifiques |
+| Ne pas vérifier les neurones morts | Monitorer les taux d'activation | >30% neurones morts = problème |
+| Utiliser Softmax en couches cachées | Uniquement en couche de sortie | Softmax pour probabilités finales uniquement |
+| Initialisation de poids inadaptée | He init (ReLU), Xavier (Tanh/Sigmoid) | Initialisation doit correspondre à l'activation |
+
+---
+
+## 📚 Ressources Complémentaires
+
+### Papers Fondamentaux
+
+1. **"Deep Sparse Rectifier Neural Networks"** - Glorot, Bordes, Bengio (2011)
+   - [PDF](http://proceedings.mlr.press/v15/glorot11a/glorot11a.pdf)
+   - 📌 **Contribution** : Introduit ReLU comme activation standard pour le deep learning
+   - 📊 **Impact** : Résout largement le gradient vanishing, accélère la convergence
+
+2. **"Gaussian Error Linear Units (GELUs)"** - Hendrycks, Gimpel (2016)
+   - [arXiv](https://arxiv.org/abs/1606.08415)
+   - 📌 **Contribution** : GELU comme alternative lisse à ReLU
+   - 🤖 **Utilisation** : Standard dans BERT, GPT, Vision Transformers
+
+3. **"Searching for Activation Functions"** - Ramachandran et al. (2017)
+   - [arXiv](https://arxiv.org/abs/1710.05941)
+   - 📌 **Contribution** : Découvre Swish via recherche automatique
+   - 🔍 **Méthode** : Reinforcement Learning pour trouver les meilleures activations
+
+4. **"Self-Normalizing Neural Networks"** - Klambauer et al. (2017)
+   - [arXiv](https://arxiv.org/abs/1706.02515)
+   - 📌 **Contribution** : SELU avec propriété d'auto-normalisation théorique
+   - ⚙️ **Innovation** : Évite Batch Normalization dans certains cas
+
+### Documentation & Tutorials
+
+- **[PyTorch Activation Functions](https://pytorch.org/docs/stable/nn.html#non-linear-activations-weighted-sum-nonlinearity)** - Documentation officielle
+- **[TensorFlow Activations](https://www.tensorflow.org/api_docs/python/tf/keras/activations)** - Guide Keras
+- **[Visualizing Activation Functions](https://dashee87.github.io/deep%20learning/visualising-activation-functions-in-neural-networks/)** - Blog interactif
+
+### Outils
+
+- **[Neural Network Playground](https://playground.tensorflow.org/)** - Visualisation interactive de l'impact des activations
+- **[Netron](https://netron.app/)** - Visualiser les architectures et activations
+- **[TensorBoard](https://www.tensorflow.org/tensorboard)** - Monitorer les distributions d'activations
+
+---
+
+## 🔙 Navigation
+
+**Retour** : [INDEX Deep Learning](../INDEX.md) | [README Principal](../../README.md)
+
+**Cours connexes dans ce domaine** :
+- [CNN](../01_architectures/cnn.md) - Application des activations en vision
+- [Vision Transformers](../01_architectures/vit.md) - GELU en pratique
+
+**Progression recommandée** :
+1. ✅ Fonctions d'Activation (ce cours)
+2. → [CNN](../01_architectures/cnn.md) - Architectures pour la vision
+3. → [Integrated Gradients](../04_interpretabilite/integrated_gradients.md) - Interprétabilité
+
+---
+
+*Dernière mise à jour : 2026-02-24*
+*Cours complet et approfondi sur les fonctions d'activation - Du fondamental à l'état de l'art*
