@@ -213,6 +213,8 @@ Pour comprendre un token, il faut sélectionner les autres tokens pertinents. Da
 
 L'attention apprend dynamiquement quelles positions consulter et avec quelle intensité.
 
+![Image Mechanisme attention](https://github.com/ClemWasChoosen/2nd-cerveau-travail/blob/main/divers/image/attention-mechanism.jpg)
+
 ### 3.2 Requêtes, clés et valeurs
 
 À partir de `X`, trois projections linéaires produisent :
